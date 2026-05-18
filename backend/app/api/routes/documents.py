@@ -2,7 +2,10 @@ from fastapi import APIRouter, File, HTTPException, UploadFile
 
 from app.services.chunk_service import save_chunks_to_json, split_text_into_chunks
 from app.services.document_service import extract_text_from_pdf, save_uploaded_file
-from app.services.vector_store_service import index_chunks_in_vectorstore
+from app.services.vector_store_service import (
+    index_chunks_in_vectorstore,
+    search_similar_chunks,
+)
 
 router = APIRouter(
     prefix="/documents",
@@ -131,6 +134,39 @@ def index_document_chunks(chunks_file: str):
             "collection_name": result["collection_name"],
             "total_documents": result["total_documents"],
             "vectorstore_dir": result["vectorstore_dir"],
+        }
+
+    except ValueError as error:
+        raise HTTPException(status_code=400, detail=str(error))
+
+@router.post("/search")
+def search_document_chunks(collection_name: str, query: str, k: int = 4):
+    try:
+        results = search_similar_chunks(
+            collection_name=collection_name,
+            query=query,
+            k=k,
+        )
+
+        preview_results = []
+
+        for item in results:
+            preview_results.append(
+                {
+                    "page": item["metadata"].get("page"),
+                    "chunk_index": item["metadata"].get("chunk_index"),
+                    "score": item["score"],
+                    "preview": item["content"][:500],
+                    "metadata": item["metadata"],
+                }
+            )
+
+        return {
+            "message": "Busca semântica realizada com sucesso.",
+            "collection_name": collection_name,
+            "query": query,
+            "total_results": len(results),
+            "results": preview_results,
         }
 
     except ValueError as error:

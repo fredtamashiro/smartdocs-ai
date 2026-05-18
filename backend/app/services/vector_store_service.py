@@ -90,3 +90,42 @@ def index_chunks_in_vectorstore(chunks_file: str) -> dict[str, Any]:
         "total_documents": len(documents),
         "vectorstore_dir": str(VECTORSTORE_DIR),
     }
+
+def search_similar_chunks(
+    collection_name: str,
+    query: str,
+    k: int = 4,
+) -> list[dict[str, Any]]:
+    if not query.strip():
+        raise ValueError("A pergunta não pode estar vazia.")
+
+    if k <= 0:
+        raise ValueError("O parâmetro k deve ser maior que zero.")
+
+    embeddings = OpenAIEmbeddings(
+        model="text-embedding-3-small",
+    )
+
+    vectorstore = Chroma(
+        collection_name=collection_name,
+        embedding_function=embeddings,
+        persist_directory=str(VECTORSTORE_DIR),
+    )
+
+    results = vectorstore.similarity_search_with_score(
+        query=query,
+        k=k,
+    )
+
+    similar_chunks = []
+
+    for document, score in results:
+        similar_chunks.append(
+            {
+                "content": document.page_content,
+                "metadata": document.metadata,
+                "score": score,
+            }
+        )
+
+    return similar_chunks

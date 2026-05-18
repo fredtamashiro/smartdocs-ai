@@ -3,6 +3,7 @@ from uuid import uuid4
 
 from fastapi import UploadFile
 from pypdf import PdfReader
+from app.services.text_cleaning_service import clean_extracted_text
 
 UPLOAD_DIR = Path("app/storage/uploads")
 
@@ -42,7 +43,8 @@ def extract_text_from_pdf(file_path: str) -> dict:
     pages = []
 
     for index, page in enumerate(reader.pages, start=1):
-        text = page.extract_text() or ""
+        raw_text = page.extract_text() or ""
+        text = clean_extracted_text(raw_text)
 
         pages.append(
             {
