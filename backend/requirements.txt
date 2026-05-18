@@ -8,3 +8,5 @@ langchain-openai==0.2.14
 langchain-chroma==0.1.4
 chromadb==0.5.23
 python-dotenv==1.0.1
+
+langgraph==0.2.64
