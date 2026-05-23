@@ -28,6 +28,10 @@ backend/app/storage/uploads/*
 backend/app/storage/chunks/*
 !backend/app/storage/chunks/.gitkeep
 
+# Enriched chunks
+backend/app/storage/enriched_chunks/*
+!backend/app/storage/enriched_chunks/.gitkeep
+
 # Documents registry
 backend/app/storage/documents_registry.json
 

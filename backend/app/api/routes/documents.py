@@ -4,7 +4,10 @@ from pathlib import Path
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 
 from app.api.dependencies import require_api_key
-from app.services.chunk_enrichment_service import enrich_chunks_file
+from app.services.chunk_enrichment_service import (
+    enrich_chunks_file,
+    enrich_chunks_file_in_batches,
+)
 from app.services.chunk_service import save_chunks_to_json, split_text_into_chunks
 from app.services.document_service import extract_text_from_pdf, save_uploaded_file
 from app.services.vector_store_service import (
@@ -343,6 +346,36 @@ def index_enriched_document_chunks(enriched_chunks_file: str):
             "collection_name": result["collection_name"],
             "total_documents": result["total_documents"],
             "vectorstore_dir": result["vectorstore_dir"],
+        }
+
+    except ValueError as error:
+        raise HTTPException(status_code=400, detail=str(error))
+
+@router.post("/enrich-chunks-batch")
+def enrich_document_chunks_batch(
+    chunks_file: str,
+    limit: int = 20,
+    offset: int = 0,
+    batch_size: int = 5,
+):
+    try:
+        result = enrich_chunks_file_in_batches(
+            chunks_file=chunks_file,
+            limit=limit,
+            offset=offset,
+            batch_size=batch_size,
+        )
+
+        return {
+            "message": "Chunks enriquecidos em lote com sucesso.",
+            "document_id": result["document_id"],
+            "enriched_chunks_file": result["enriched_chunks_file"],
+            "total_original_chunks": result["total_original_chunks"],
+            "total_enriched_chunks": result["total_enriched_chunks"],
+            "offset": result["offset"],
+            "limit": result["limit"],
+            "batch_size": result["batch_size"],
+            "preview": result["preview"],
         }
 
     except ValueError as error:
