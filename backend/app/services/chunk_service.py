@@ -1,9 +1,9 @@
-"""Utilities for splitting extracted document text into chunks."""
 import json
 from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 CHUNKS_DIR = Path("app/storage/chunks")
 
@@ -22,6 +22,20 @@ def split_text_into_chunks(
     if chunk_overlap >= chunk_size:
         raise ValueError("chunk_overlap deve ser menor que chunk_size.")
 
+    splitter = RecursiveCharacterTextSplitter(
+        chunk_size=chunk_size,
+        chunk_overlap=chunk_overlap,
+        separators=[
+            "\n\n",
+            "\n",
+            ". ",
+            "; ",
+            ", ",
+            " ",
+            "",
+        ],
+    )
+
     chunks = []
     chunk_index = 1
 
@@ -32,26 +46,25 @@ def split_text_into_chunks(
         if not text:
             continue
 
-        start = 0
-        text_length = len(text)
+        page_chunks = splitter.split_text(text)
 
-        while start < text_length:
-            end = start + chunk_size
-            chunk_text = text[start:end].strip()
+        for page_chunk in page_chunks:
+            chunk_text = page_chunk.strip()
 
-            if chunk_text:
-                chunks.append(
-                    {
-                        "chunk_index": chunk_index,
-                        "page": page_number,
-                        "content": chunk_text,
-                        "char_count": len(chunk_text),
-                    }
-                )
+            if not chunk_text:
+                continue
 
-                chunk_index += 1
+            chunks.append(
+                {
+                    "chunk_index": chunk_index,
+                    "page": page_number,
+                    "content": chunk_text,
+                    "char_count": len(chunk_text),
+                    "chunk_strategy": "recursive_character",
+                }
+            )
 
-            start += chunk_size - chunk_overlap
+            chunk_index += 1
 
     return chunks
 
@@ -72,6 +85,7 @@ def save_chunks_to_json(
     payload = {
         "document_id": document_id,
         "source_file_path": source_file_path,
+        "chunk_strategy": "recursive_character",
         "total_chunks": len(chunks),
         "chunks": chunks,
     }

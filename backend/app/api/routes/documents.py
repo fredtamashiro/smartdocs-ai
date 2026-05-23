@@ -4,6 +4,7 @@ from pathlib import Path
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 
 from app.api.dependencies import require_api_key
+from app.services.chunk_enrichment_service import enrich_chunks_file
 from app.services.chunk_service import save_chunks_to_json, split_text_into_chunks
 from app.services.document_service import extract_text_from_pdf, save_uploaded_file
 from app.services.vector_store_service import (
@@ -302,6 +303,29 @@ def search_document_chunks(
             "query": query,
             "total_results": len(results),
             "results": preview_results,
+        }
+
+    except ValueError as error:
+        raise HTTPException(status_code=400, detail=str(error))
+
+@router.post("/enrich-chunks")
+def enrich_document_chunks(chunks_file: str, limit: int = 10, offset: int = 0):
+    try:
+        result = enrich_chunks_file(
+            chunks_file=chunks_file,
+            limit=limit,
+            offset=offset
+        )
+
+        return {
+            "message": "Chunks enriquecidos com sucesso.",
+            "document_id": result["document_id"],
+            "enriched_chunks_file": result["enriched_chunks_file"],
+            "total_original_chunks": result["total_original_chunks"],
+            "total_enriched_chunks": result["total_enriched_chunks"],
+            "preview": result["preview"],
+            "offset": result["offset"],
+            "limit": result["limit"],
         }
 
     except ValueError as error:

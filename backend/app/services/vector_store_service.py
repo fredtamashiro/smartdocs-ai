@@ -38,6 +38,7 @@ def create_documents_from_chunks(chunks_payload: dict[str, Any]) -> list[Documen
                     "chunk_index": chunk["chunk_index"],
                     "page": chunk["page"],
                     "char_count": chunk["char_count"],
+                    "chunk_strategy": chunk.get("chunk_strategy", "unknown"),
                 },
             )
         )
