@@ -48,6 +48,7 @@ export type ChatSource = {
   page: number;
   chunk_index: number;
   score: number;
+  matched_query?: string;
   preview: string;
 };
 

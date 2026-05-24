@@ -2,6 +2,7 @@ from typing import Any
 
 from langchain_openai import ChatOpenAI
 
+from app.config import get_settings
 from app.services.vector_store_service import search_similar_chunks
 
 
@@ -61,9 +62,11 @@ Pergunta:
 {question}
 """
 
+    settings = get_settings()
+
     llm = ChatOpenAI(
-        model="gpt-4o-mini",
-        temperature=0,
+        model=settings.openai_chat_model,
+        temperature=settings.openai_chat_temperature,
     )
 
     response = llm.invoke(prompt)

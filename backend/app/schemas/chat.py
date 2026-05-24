@@ -29,3 +29,22 @@ class ChatResponse(BaseModel):
     question: str
     answer: str
     sources: list[dict[str, Any]]
+
+class ChatByCollectionRequest(BaseModel):
+    collection_name: str = Field(
+        ...,
+        description="Nome da collection no Chroma.",
+    )
+
+    question: str = Field(
+        ...,
+        min_length=3,
+        description="Pergunta do usuário.",
+    )
+
+    k: int = Field(
+        default=4,
+        ge=1,
+        le=10,
+        description="Quantidade de chunks recuperados.",
+    )

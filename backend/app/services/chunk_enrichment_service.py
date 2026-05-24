@@ -11,13 +11,17 @@ from app.services.vector_store_service import load_chunks_from_json
 ENRICHED_CHUNKS_DIR = Path("app/storage/enriched_chunks")
 
 
-def enrich_single_chunk(chunk: dict[str, Any]) -> dict[str, Any]:
+def create_chat_model() -> ChatOpenAI:
     settings = get_settings()
 
-    llm = ChatOpenAI(
+    return ChatOpenAI(
         model=settings.openai_chat_model,
-        temperature=0,
+        temperature=settings.openai_chat_temperature,
     )
+
+
+def enrich_single_chunk(chunk: dict[str, Any]) -> dict[str, Any]:
+    llm = create_chat_model()
 
     prompt = f"""
 Você é um assistente especializado em análise de chunks para sistemas RAG com manuais automotivos.
@@ -165,12 +169,7 @@ def build_embedding_content(enriched_chunk: dict[str, Any]) -> str:
     ).strip()
 
 def enrich_chunk_batch(chunks: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    settings = get_settings()
-
-    llm = ChatOpenAI(
-        model=settings.openai_chat_model,
-        temperature=0,
-    )
+    llm = create_chat_model()
 
     chunks_payload = []
 

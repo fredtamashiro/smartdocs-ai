@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     app_api_key: str | None = None
 
     openai_chat_model: str = "gpt-4o-mini"
+    openai_chat_temperature: float = 1
     openai_embedding_model: str = "text-embedding-3-small"
     max_relevance_score: float = 1.2
 
