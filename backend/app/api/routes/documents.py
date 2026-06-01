@@ -1,7 +1,7 @@
 import logging
 from pathlib import Path
 
-from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
+from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, HTTPException, UploadFile
 
 from app.api.dependencies import require_api_key
 from app.services.chunk_enrichment_service import (
@@ -21,6 +21,14 @@ from app.services.vector_store_service import (
     index_chunks_in_vectorstore,
     index_enriched_chunks_in_vectorstore,
     search_similar_chunks,
+)
+
+from app.services.processing_job_service import (
+    STATUS_COMPLETED,
+    STATUS_FAILED,
+    STATUS_PROCESSING,
+    create_processing_job,
+    update_processing_job,
 )
 
 logger = logging.getLogger(__name__)
@@ -44,6 +52,135 @@ def ensure_path_inside_directory(path_value: str, base_dir: Path, label: str) ->
         raise ValueError(f"{label} deve estar dentro de {base_dir}.") from error
 
     return str(path)
+
+def run_smart_ingest_job(
+    job_id: str,
+    saved_file: dict,
+    theme_id: str,
+    chunk_size: int,
+    chunk_overlap: int,
+    batch_size: int,
+) -> None:
+    try:
+        update_processing_job(
+            job_id,
+            {
+                "status": STATUS_PROCESSING,
+                "progress": 5,
+                "current_step": "Extraindo texto do PDF",
+            },
+        )
+
+        extracted_text = extract_text_from_pdf(saved_file["path"])
+
+        update_processing_job(
+            job_id,
+            {
+                "progress": 15,
+                "current_step": "Gerando chunks do documento",
+            },
+        )
+
+        chunks = split_text_into_chunks(
+            pages=extracted_text["pages"],
+            chunk_size=chunk_size,
+            chunk_overlap=chunk_overlap,
+        )
+
+        saved_chunks = save_chunks_to_json(
+            chunks=chunks,
+            source_file_path=extracted_text["file_path"],
+        )
+
+        update_processing_job(
+            job_id,
+            {
+                "progress": 30,
+                "current_step": "Enriquecendo chunks com IA",
+                "partial_result": {
+                    "chunks_file": saved_chunks["chunks_file"],
+                    "total_chunks": saved_chunks["total_chunks"],
+                },
+            },
+        )
+
+        enriched_chunks = enrich_all_chunks_file(
+            chunks_file=saved_chunks["chunks_file"],
+            batch_size=batch_size,
+            theme_id=theme_id,
+        )
+
+        update_processing_job(
+            job_id,
+            {
+                "progress": 80,
+                "current_step": "Indexando chunks enriquecidos no vector store",
+                "partial_result": {
+                    "chunks_file": saved_chunks["chunks_file"],
+                    "enriched_chunks_file": enriched_chunks["enriched_chunks_file"],
+                    "total_chunks": saved_chunks["total_chunks"],
+                    "total_enriched_chunks": enriched_chunks["total_enriched_chunks"],
+                },
+            },
+        )
+
+        indexed_document = index_enriched_chunks_in_vectorstore(
+            enriched_chunks_file=enriched_chunks["enriched_chunks_file"],
+        )
+
+        theme = find_theme_by_id(theme_id)
+
+        if theme is None:
+            raise ValueError("Tema informado não encontrado.")
+
+        document_payload = {
+            "original_filename": saved_file["original_filename"],
+            "stored_filename": saved_file["stored_filename"],
+            "file_path": saved_file["path"],
+            "document_id": indexed_document["document_id"],
+            "collection_name": indexed_document["collection_name"],
+            "enriched_collection_name": indexed_document["collection_name"],
+            "retrieval_mode": "enriched",
+            "theme_id": theme["theme_id"],
+            "theme_name": theme["name"],
+            "total_pages": extracted_text["total_pages"],
+            "total_chars": extracted_text["total_chars"],
+            "total_chunks": saved_chunks["total_chunks"],
+            "chunks_file": saved_chunks["chunks_file"],
+            "enriched_chunks_file": enriched_chunks["enriched_chunks_file"],
+        }
+
+        registered_document = register_document(document_payload)
+
+        update_processing_job(
+            job_id,
+            {
+                "status": STATUS_COMPLETED,
+                "progress": 100,
+                "current_step": "Processamento concluído",
+                "result": {
+                    "document": registered_document,
+                    "vectorstore_dir": indexed_document["vectorstore_dir"],
+                    "total_indexed_documents": indexed_document.get(
+                        "total_indexed_documents",
+                        indexed_document.get("total_documents"),
+                    ),
+                    "total_skipped_chunks": indexed_document.get("total_skipped_chunks"),
+                },
+            },
+        )
+
+    except Exception as error:
+        logger.exception("Erro ao executar smart ingest job %s", job_id)
+
+        update_processing_job(
+            job_id,
+            {
+                "status": STATUS_FAILED,
+                "current_step": "Erro no processamento",
+                "error": str(error),
+            },
+        )
 
 
 @router.get("")
@@ -470,3 +607,60 @@ def enrich_all_document_chunks(
 
     except ValueError as error:
         raise HTTPException(status_code=400, detail=str(error))
+
+@router.post("/smart-ingest/start")
+def start_smart_ingest(
+    background_tasks: BackgroundTasks,
+    file: UploadFile = File(...),
+    theme_id: str = Form("generic_pdf"),
+    chunk_size: int = Form(1000),
+    chunk_overlap: int = Form(200),
+    batch_size: int = Form(10),
+    _auth: None = Depends(require_api_key),
+):
+    try:
+        theme = find_theme_by_id(theme_id)
+
+        if theme is None:
+            raise ValueError("Tema informado não encontrado.")
+
+        saved_file = save_uploaded_file(file)
+
+        job = create_processing_job(
+            job_type="smart_ingest",
+            payload={
+                "original_filename": saved_file["original_filename"],
+                "stored_filename": saved_file["stored_filename"],
+                "file_path": saved_file["path"],
+                "theme_id": theme["theme_id"],
+                "theme_name": theme["name"],
+                "chunk_size": chunk_size,
+                "chunk_overlap": chunk_overlap,
+                "batch_size": batch_size,
+            },
+        )
+
+        background_tasks.add_task(
+            run_smart_ingest_job,
+            job_id=job["job_id"],
+            saved_file=saved_file,
+            theme_id=theme_id,
+            chunk_size=chunk_size,
+            chunk_overlap=chunk_overlap,
+            batch_size=batch_size,
+        )
+
+        return {
+            "message": "Processamento inteligente iniciado.",
+            "job": job,
+        }
+
+    except ValueError as error:
+        logger.warning("Falha de validação ao iniciar smart ingest: %s", error)
+        raise HTTPException(status_code=400, detail=str(error))
+    except Exception as error:
+        logger.exception("Erro inesperado ao iniciar smart ingest")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Erro inesperado ao iniciar smart ingest: {error}",
+        )
