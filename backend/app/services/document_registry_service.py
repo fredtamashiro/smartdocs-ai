@@ -66,6 +66,25 @@ def register_document(document_data: dict[str, Any]) -> dict[str, Any]:
     if "theme_name" in document_data:
         registered_document["theme_name"] = document_data["theme_name"]
 
+    if "document_summary" in document_data:
+        registered_document["document_summary"] = document_data["document_summary"]
+
+    if "document_type" in document_data:
+        registered_document["document_type"] = document_data["document_type"]
+
+    if "main_topics" in document_data:
+        registered_document["main_topics"] = document_data["main_topics"]
+
+    if "suggested_questions" in document_data:
+        registered_document["suggested_questions"] = document_data[
+            "suggested_questions"
+        ]
+
+    if "summary_limitations" in document_data:
+        registered_document["summary_limitations"] = document_data[
+            "summary_limitations"
+        ]
+
     with _REGISTRY_LOCK:
         documents = load_documents_registry()
         documents.append(registered_document)
@@ -89,6 +108,20 @@ def find_registered_document_by_id(document_id: str) -> dict[str, Any] | None:
             return document
 
     return None
+
+
+def delete_registered_document(document_id: str) -> dict[str, Any]:
+    documents = load_documents_registry()
+
+    for index, document in enumerate(documents):
+        if document["document_id"] == document_id:
+            removed_document = documents.pop(index)
+            save_documents_registry(documents)
+
+            return removed_document
+
+    raise ValueError("Documento não encontrado.")
+
 
 def update_registered_document(
     document_id: str,

@@ -34,6 +34,17 @@ export type DocumentsResponse = {
   documents: DocumentItem[];
 };
 
+export type DeleteDocumentResponse = {
+  message: string;
+  document_id: string;
+  deleted_files: Array<{
+    field: string;
+    path: string;
+  }>;
+  removed_document: DocumentItem;
+  warning?: string;
+};
+
 export async function fetchDocuments(): Promise<DocumentsResponse> {
   const response = await fetch(`${API_URL}/documents`, {
     cache: "no-store",
@@ -42,6 +53,21 @@ export async function fetchDocuments(): Promise<DocumentsResponse> {
 
   if (!response.ok) {
     throw new Error("Erro ao buscar documentos.");
+  }
+
+  return response.json();
+}
+
+export async function deleteDocument(
+  documentId: string,
+): Promise<DeleteDocumentResponse> {
+  const response = await fetch(`${API_URL}/documents/${documentId}`, {
+    method: "DELETE",
+    headers: getAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    throw new Error("Erro ao apagar documento.");
   }
 
   return response.json();

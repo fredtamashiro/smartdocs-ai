@@ -11,13 +11,16 @@ from app.services.chunk_enrichment_service import (
 )
 from app.services.chunk_service import save_chunks_to_json, split_text_into_chunks
 from app.services.document_registry_service import (
+    delete_registered_document,
     list_registered_documents,
     register_document,
     update_registered_document,
 )
 from app.services.document_service import extract_text_from_pdf, save_uploaded_file
+from app.services.document_summary_service import generate_document_summary
 from app.services.theme_service import find_theme_by_id
 from app.services.vector_store_service import (
+    delete_vectorstore_collection,
     index_chunks_in_vectorstore,
     index_enriched_chunks_in_vectorstore,
     search_similar_chunks,
@@ -52,6 +55,24 @@ def ensure_path_inside_directory(path_value: str, base_dir: Path, label: str) ->
         raise ValueError(f"{label} deve estar dentro de {base_dir}.") from error
 
     return str(path)
+
+
+def remove_file_if_exists(file_path: str | None) -> bool:
+    if not file_path:
+        return False
+
+    path = Path(file_path)
+
+    if not path.exists():
+        return False
+
+    if not path.is_file():
+        return False
+
+    path.unlink()
+
+    return True
+
 
 def run_smart_ingest_job(
     job_id: str,
@@ -151,6 +172,19 @@ def run_smart_ingest_job(
             enriched_chunks_file=enriched_chunks["enriched_chunks_file"],
         )
 
+        update_processing_job(
+            job_id,
+            {
+                "progress": 90,
+                "current_step": "Gerando resumo do documento",
+            },
+        )
+
+        document_summary = generate_document_summary(
+            enriched_chunks_file=enriched_chunks["enriched_chunks_file"],
+            theme_id=theme_id,
+        )
+
         theme = find_theme_by_id(theme_id)
 
         if theme is None:
@@ -171,6 +205,14 @@ def run_smart_ingest_job(
             "total_chunks": saved_chunks["total_chunks"],
             "chunks_file": saved_chunks["chunks_file"],
             "enriched_chunks_file": enriched_chunks["enriched_chunks_file"],
+            "document_summary": document_summary["summary"].get("document_summary"),
+            "document_type": document_summary["summary"].get("document_type"),
+            "main_topics": document_summary["summary"].get("main_topics", []),
+            "suggested_questions": document_summary["summary"].get(
+                "suggested_questions",
+                [],
+            ),
+            "summary_limitations": document_summary["summary"].get("limitations", []),
         }
 
         registered_document = register_document(document_payload)
@@ -215,6 +257,64 @@ def list_documents():
         "total": len(documents),
         "documents": documents,
     }
+
+
+@router.delete("/{document_id}")
+def delete_document(
+    document_id: str,
+    _auth: None = Depends(require_api_key),
+):
+    try:
+        removed_document = delete_registered_document(document_id)
+
+        deleted_files = []
+
+        file_fields = [
+            "file_path",
+            "chunks_file",
+            "enriched_chunks_file",
+        ]
+
+        for field in file_fields:
+            file_path = removed_document.get(field)
+
+            if remove_file_if_exists(file_path):
+                deleted_files.append(
+                    {
+                        "field": field,
+                        "path": file_path,
+                    }
+                )
+
+        deleted_collections = []
+
+        collection_names = {
+            removed_document.get("collection_name"),
+            removed_document.get("enriched_collection_name"),
+        }
+
+        for collection_name in collection_names:
+            if collection_name:
+                deleted_collections.append(
+                    delete_vectorstore_collection(collection_name)
+                )
+
+        return {
+            "message": "Documento apagado com sucesso.",
+            "document_id": document_id,
+            "deleted_files": deleted_files,
+            "deleted_collections": deleted_collections,
+            "removed_document": removed_document,
+        }
+
+    except ValueError as error:
+        raise HTTPException(status_code=404, detail=str(error))
+    except Exception as error:
+        logger.exception("Erro inesperado ao apagar documento")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Erro inesperado ao apagar documento: {error}",
+        )
 
 
 @router.post("/ingest")

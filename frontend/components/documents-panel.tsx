@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { DocumentChat } from "@/components/document-chat";
 import { DocumentUpload } from "@/components/document-upload";
 import { SmartDocumentUpload } from "@/components/smart-document-upload";
-import { DocumentItem, fetchDocuments } from "@/services/api";
+import { DocumentItem, deleteDocument, fetchDocuments } from "@/services/api";
 
 export function DocumentsPanel() {
   const [documents, setDocuments] = useState<DocumentItem[]>([]);
@@ -38,6 +38,23 @@ export function DocumentsPanel() {
         setIsLoading(false);
       });
   }, []);
+
+  async function handleDeleteDocument(documentId: string) {
+    const confirmed = window.confirm(
+      "Tem certeza que deseja apagar este documento?",
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      await deleteDocument(documentId);
+      await loadDocuments();
+    } catch {
+      setErrorMessage("Não foi possível apagar o documento.");
+    }
+  }
 
   return (
     <>
@@ -99,6 +116,16 @@ export function DocumentsPanel() {
                 <p className="mt-3 break-all text-xs text-slate-600">
                   ID: {document.document_id}
                 </p>
+
+                <div className="mt-4 flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteDocument(document.document_id)}
+                    className="rounded-lg border border-red-900/60 px-3 py-1.5 text-xs font-medium text-red-300 transition hover:bg-red-950/40"
+                  >
+                    Apagar
+                  </button>
+                </div>
 
                 <DocumentChat documentId={document.document_id} />
               </article>

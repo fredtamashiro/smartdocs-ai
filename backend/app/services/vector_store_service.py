@@ -2,6 +2,8 @@ import hashlib
 import json
 from pathlib import Path
 from typing import Any
+
+import chromadb
 from app.config import get_settings
 
 from langchain_chroma import Chroma
@@ -311,3 +313,28 @@ def index_enriched_chunks_in_vectorstore(enriched_chunks_file: str) -> dict[str,
         "total_documents": len(documents),
         "vectorstore_dir": str(VECTORSTORE_DIR),
     }
+
+
+def delete_vectorstore_collection(collection_name: str) -> dict[str, Any]:
+    if not collection_name:
+        raise ValueError("Nome da collection não informado.")
+
+    VECTORSTORE_DIR.mkdir(parents=True, exist_ok=True)
+
+    client = chromadb.PersistentClient(path=str(VECTORSTORE_DIR))
+
+    try:
+        client.delete_collection(name=collection_name)
+
+        return {
+            "collection_name": collection_name,
+            "deleted": True,
+            "message": "Collection removida com sucesso.",
+        }
+
+    except Exception as error:
+        return {
+            "collection_name": collection_name,
+            "deleted": False,
+            "message": str(error),
+        }
