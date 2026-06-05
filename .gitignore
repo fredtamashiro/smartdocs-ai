@@ -24,21 +24,6 @@ backend/.env
 backend/app/storage/uploads/*
 !backend/app/storage/uploads/.gitkeep
 
-# Generated chunks
-backend/app/storage/chunks/*
-!backend/app/storage/chunks/.gitkeep
-
-# Enriched chunks
-backend/app/storage/enriched_chunks/*
-!backend/app/storage/enriched_chunks/.gitkeep
-
-# Documents registry
-backend/app/storage/documents_registry.json
-
-# Vector store
-backend/app/storage/vectorstore/*
-!backend/app/storage/vectorstore/.gitkeep
-
 # Test and tooling caches
 .pytest_cache/
 .mypy_cache/
@@ -55,5 +40,3 @@ htmlcov/
 *.code-workspace
 Thumbs.db
 .DS_Store
-backend/app/storage/processing_jobs/*
-!backend/app/storage/processing_jobs/.gitkeep

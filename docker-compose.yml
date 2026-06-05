@@ -11,6 +11,14 @@ services:
     volumes:
       - smartdocs_postgres_data:/var/lib/postgresql/data
 
+  redis:
+    image: redis:7-alpine
+    container_name: smartdocs-redis
+    ports:
+      - "6380:6379"
+    volumes:
+      - smartdocs_redis_data:/data
+
   backend:
     build:
       context: ./backend
@@ -26,8 +34,10 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
       - DATABASE_URL=postgresql://smartdocs:smartdocs@postgres:5432/smartdocs
+      - REDIS_URL=redis://redis:6379/0
     depends_on:
       - postgres
+      - redis
 
   frontend:
     build:
@@ -49,3 +59,4 @@ services:
 
 volumes:
   smartdocs_postgres_data:
+  smartdocs_redis_data:

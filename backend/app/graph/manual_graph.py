@@ -1,20 +1,25 @@
-﻿from typing import Any, TypedDict
+﻿import logging
+from typing import Any, TypedDict
 from app.config import get_settings
 
 from langchain_openai import ChatOpenAI
 from langgraph.graph import END, StateGraph
 
 from app.services.rag_service import build_context_from_chunks
+from app.services.pgvector_search_service import search_similar_chunks_pgvector
 from app.services.theme_service import format_theme_rules, get_theme_or_default
-from app.services.vector_store_service import search_similar_chunks
 
 import json
+
+logger = logging.getLogger(__name__)
 
 
 class ManualGraphState(TypedDict):
     """Define os dados compartilhados entre as etapas do fluxo do LangGraph."""
 
     collection_name: str
+    document_id: str | None
+    retrieval_backend: str
     question: str
     rewritten_question: str
     search_queries: list[str]
@@ -44,7 +49,7 @@ def create_chat_model() -> ChatOpenAI:
 
 
 def rewrite_query(state: ManualGraphState) -> ManualGraphState:
-    """Reescreve a pergunta para melhorar a busca semantica no vector store."""
+    """Reescreve a pergunta para melhorar a busca semantica no pgvector."""
 
     prompt = f"""
 Você é um assistente especializado em melhorar perguntas para busca semântica em documentos PDF.
@@ -85,14 +90,46 @@ def retrieve_context(state: ManualGraphState) -> ManualGraphState:
     candidates_by_key = {}
 
     for query in search_queries:
-        chunks = search_similar_chunks(
-            collection_name=state["collection_name"],
-            query=query,
-            k=state["k"],
-        )
+        chunks = []
+
+        if state.get("document_id"):
+            try:
+                chunks = search_similar_chunks_pgvector(
+                    document_id=state["document_id"],
+                    query=query,
+                    k=state["k"],
+                )
+            except Exception:
+                logger.exception(
+                    "Erro ao buscar com pgvector para query: %s",
+                    query,
+                )
+                chunks = []
 
         for chunk in chunks:
-            metadata = chunk["metadata"]
+            metadata = {
+                **chunk.get("metadata", {}),
+                "document_id": (
+                    state.get("document_id")
+                    or chunk.get("metadata", {}).get("document_id")
+                ),
+                "page": chunk.get("page") or chunk.get("metadata", {}).get("page"),
+                "chunk_index": (
+                    chunk.get("chunk_index")
+                    or chunk.get("metadata", {}).get("chunk_index")
+                ),
+            }
+
+            normalized_chunk = {
+                "content": chunk["content"],
+                "retrieval_content": (
+                    chunk.get("embedding_content")
+                    or chunk.get("retrieval_content")
+                    or chunk["content"]
+                ),
+                "metadata": metadata,
+                "score": chunk["score"],
+            }
 
             key = (
                 metadata.get("document_id"),
@@ -102,10 +139,10 @@ def retrieve_context(state: ManualGraphState) -> ManualGraphState:
 
             existing_chunk = candidates_by_key.get(key)
 
-            # Como o score do Chroma é distância, menor é melhor.
+            # Como o score do pgvector é distância, menor é melhor.
             if existing_chunk is None or chunk["score"] < existing_chunk["score"]:
                 candidates_by_key[key] = {
-                    **chunk,
+                    **normalized_chunk,
                     "matched_query": query,
                 }
 
@@ -433,6 +470,7 @@ def answer_question_with_manual_graph(
     collection_name: str,
     question: str,
     k: int = 4,
+    document_id: str | None = None,
     theme_id: str | None = None,
     theme_name: str | None = None,
     query_rules: str = "",
@@ -454,6 +492,8 @@ def answer_question_with_manual_graph(
     result = graph.invoke(
         {
             "collection_name": collection_name,
+            "document_id": document_id,
+            "retrieval_backend": "pgvector",
             "question": question,
             "rewritten_question": "",
             "search_queries": [],
@@ -537,3 +577,4 @@ Pergunta original:
         **state,
         "search_queries": deduplicated_queries,
     }
+

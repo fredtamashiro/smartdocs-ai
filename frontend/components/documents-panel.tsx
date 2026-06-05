@@ -7,14 +7,23 @@ import { DocumentChat } from "@/components/document-chat";
 import { SmartDocumentUpload } from "@/components/smart-document-upload";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { DocumentItem, deleteDocument, fetchDocuments } from "@/services/api";
+import {
+  AuthUser,
+  DocumentItem,
+  deleteDocument,
+  fetchDocuments,
+} from "@/services/api";
 
 type SelectedQuestion = {
   question: string;
   requestId: number;
 };
 
-export function DocumentsPanel() {
+type DocumentsPanelProps = {
+  adminUser: AuthUser | null;
+};
+
+export function DocumentsPanel({ adminUser }: DocumentsPanelProps) {
   const [documents, setDocuments] = useState<DocumentItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
@@ -95,17 +104,21 @@ export function DocumentsPanel() {
           </p>
         </div>
 
-        <Button type="button" onClick={() => setIsImportOpen(true)}>
-          <Plus className="h-4 w-4" />
-          Importar documento
-        </Button>
+        {adminUser && (
+          <Button type="button" onClick={() => setIsImportOpen(true)}>
+            <Plus className="h-4 w-4" />
+            Importar documento
+          </Button>
+        )}
       </header>
 
-      <SmartDocumentUpload
-        isOpen={isImportOpen}
-        onOpenChange={setIsImportOpen}
-        onCompleted={loadDocuments}
-      />
+      {adminUser && (
+        <SmartDocumentUpload
+          isOpen={adminUser ? isImportOpen : false}
+          onOpenChange={setIsImportOpen}
+          onCompleted={loadDocuments}
+        />
+      )}
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="mb-6">
@@ -177,15 +190,17 @@ export function DocumentsPanel() {
                       Conversar
                     </Button>
 
-                    <Button
-                      type="button"
-                      onClick={() => handleDeleteDocument(document.document_id)}
-                      variant="destructive"
-                      size="sm"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                      Apagar
-                    </Button>
+                    {adminUser && (
+                      <Button
+                        type="button"
+                        onClick={() => handleDeleteDocument(document.document_id)}
+                        variant="destructive"
+                        size="sm"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                        Apagar
+                      </Button>
+                    )}
                   </div>
                 </div>
 

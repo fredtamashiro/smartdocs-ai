@@ -2,16 +2,116 @@ const API_URL =
   process.env.INTERNAL_API_URL ||
   process.env.NEXT_PUBLIC_API_URL ||
   "http://localhost:8000";
-const APP_API_KEY = process.env.NEXT_PUBLIC_APP_API_KEY;
 
-function getAuthHeaders(): Record<string, string> {
-  if (!APP_API_KEY) {
-    return {};
+type JsonValue =
+  | string
+  | number
+  | boolean
+  | null
+  | JsonValue[]
+  | { [key: string]: JsonValue };
+
+function createApiUrl(path: string): string {
+  return `${API_URL}${path}`;
+}
+
+async function getErrorMessage(
+  response: Response,
+  fallbackMessage: string,
+): Promise<string> {
+  try {
+    const payload = await response.json();
+    const detail = payload?.detail;
+
+    if (typeof detail === "string") {
+      return detail;
+    }
+
+    if (typeof detail?.message === "string") {
+      return detail.message;
+    }
+  } catch {
+    return fallbackMessage;
   }
 
+  return fallbackMessage;
+}
+
+function getAdminRequestInit(init?: RequestInit): RequestInit {
   return {
-    "X-API-Key": APP_API_KEY,
+    ...init,
+    credentials: "include",
   };
+}
+
+export type AuthUser = {
+  id: string;
+  email: string;
+  name: string | null;
+  role: string;
+  is_active: boolean;
+};
+
+export type LoginRequest = {
+  email: string;
+  password: string;
+};
+
+export type LoginResponse = {
+  user: AuthUser;
+};
+
+export async function loginAdmin({
+  email,
+  password,
+}: LoginRequest): Promise<LoginResponse> {
+  const response = await fetch(
+    createApiUrl("/auth/login"),
+    getAdminRequestInit({
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    }),
+  );
+
+  if (!response.ok) {
+    throw new Error(await getErrorMessage(response, "Erro ao fazer login."));
+  }
+
+  return response.json();
+}
+
+export async function getCurrentAdmin(): Promise<AuthUser> {
+  const response = await fetch(
+    createApiUrl("/auth/me"),
+    getAdminRequestInit({
+      cache: "no-store",
+    }),
+  );
+
+  if (!response.ok) {
+    throw new Error(await getErrorMessage(response, "Sessao administrativa invalida."));
+  }
+
+  return response.json();
+}
+
+export async function logoutAdmin(): Promise<void> {
+  const response = await fetch(
+    createApiUrl("/auth/logout"),
+    getAdminRequestInit({
+      method: "POST",
+    }),
+  );
+
+  if (!response.ok) {
+    throw new Error(await getErrorMessage(response, "Erro ao encerrar sessao."));
+  }
 }
 
 export type DocumentItem = {
@@ -54,9 +154,8 @@ export type DeleteDocumentResponse = {
 };
 
 export async function fetchDocuments(): Promise<DocumentsResponse> {
-  const response = await fetch(`${API_URL}/documents`, {
+  const response = await fetch(createApiUrl("/documents"), {
     cache: "no-store",
-    headers: getAuthHeaders(),
   });
 
   if (!response.ok) {
@@ -69,13 +168,15 @@ export async function fetchDocuments(): Promise<DocumentsResponse> {
 export async function deleteDocument(
   documentId: string,
 ): Promise<DeleteDocumentResponse> {
-  const response = await fetch(`${API_URL}/documents/${documentId}`, {
-    method: "DELETE",
-    headers: getAuthHeaders(),
-  });
+  const response = await fetch(
+    createApiUrl(`/documents/${documentId}`),
+    getAdminRequestInit({
+      method: "DELETE",
+    }),
+  );
 
   if (!response.ok) {
-    throw new Error("Erro ao apagar documento.");
+    throw new Error(await getErrorMessage(response, "Erro ao apagar documento."));
   }
 
   return response.json();
@@ -102,10 +203,9 @@ export async function askQuestion(params: {
   question: string;
   k?: number;
 }): Promise<ChatResponse> {
-  const response = await fetch(`${API_URL}/chat/ask`, {
+  const response = await fetch(createApiUrl("/chat/ask"), {
     method: "POST",
     headers: {
-      ...getAuthHeaders(),
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
@@ -116,7 +216,9 @@ export async function askQuestion(params: {
   });
 
   if (!response.ok) {
-    throw new Error("Erro ao enviar pergunta.");
+    throw new Error(
+      await getErrorMessage(response, "Erro ao enviar pergunta."),
+    );
   }
 
   return response.json();
@@ -147,11 +249,13 @@ export type ProcessingJob = {
   status: ProcessingJobStatus;
   progress: number;
   current_step: string;
-  payload: Record<string, unknown>;
-  partial_result?: Record<string, unknown> | null;
+  payload: Record<string, JsonValue>;
+  partial_result?: Record<string, JsonValue> | null;
   result?: {
     document?: DocumentItem;
-    vectorstore_dir?: string;
+    retrieval_backend?: string;
+    total_enriched_chunks?: number;
+    total_embeddings?: number;
     total_indexed_documents?: number;
     total_skipped_chunks?: number;
   } | null;
@@ -163,6 +267,22 @@ export type ProcessingJob = {
 export type ProcessingJobsResponse = {
   total: number;
   jobs: ProcessingJob[];
+};
+
+export type UsageLog = {
+  id: string;
+  project: string;
+  event_type: string;
+  ip_address: string | null;
+  user_id: string | null;
+  document_id: string | null;
+  metadata: Record<string, JsonValue>;
+  created_at: string;
+};
+
+export type UsageLogsResponse = {
+  total: number;
+  logs: UsageLog[];
 };
 
 export type StartSmartIngestParams = {
@@ -179,9 +299,7 @@ export type StartSmartIngestResponse = {
 };
 
 export async function getThemes(): Promise<ThemesResponse> {
-  const response = await fetch(`${API_URL}/themes`, {
-    headers: getAuthHeaders(),
-  });
+  const response = await fetch(createApiUrl("/themes"));
 
   if (!response.ok) {
     throw new Error("Erro ao buscar temas.");
@@ -205,38 +323,64 @@ export async function startSmartIngest({
   formData.append("chunk_overlap", String(chunkOverlap));
   formData.append("batch_size", String(batchSize));
 
-  const response = await fetch(`${API_URL}/documents/smart-ingest/start`, {
-    method: "POST",
-    headers: getAuthHeaders(),
-    body: formData,
-  });
+  const response = await fetch(
+    createApiUrl("/documents/smart-ingest/start"),
+    getAdminRequestInit({
+      method: "POST",
+      body: formData,
+    }),
+  );
 
   if (!response.ok) {
-    throw new Error("Erro ao iniciar processamento inteligente.");
+    throw new Error(
+      await getErrorMessage(
+        response,
+        "Erro ao iniciar processamento inteligente.",
+      ),
+    );
   }
 
   return response.json();
 }
 
 export async function getProcessingJobs(): Promise<ProcessingJobsResponse> {
-  const response = await fetch(`${API_URL}/processing-jobs`, {
-    headers: getAuthHeaders(),
-  });
+  const response = await fetch(
+    createApiUrl("/processing-jobs"),
+    getAdminRequestInit(),
+  );
 
   if (!response.ok) {
-    throw new Error("Erro ao buscar jobs de processamento.");
+    throw new Error(
+      await getErrorMessage(response, "Erro ao buscar jobs de processamento."),
+    );
   }
 
   return response.json();
 }
 
 export async function getProcessingJob(jobId: string): Promise<ProcessingJob> {
-  const response = await fetch(`${API_URL}/processing-jobs/${jobId}`, {
-    headers: getAuthHeaders(),
-  });
+  const response = await fetch(
+    createApiUrl(`/processing-jobs/${jobId}`),
+    getAdminRequestInit(),
+  );
 
   if (!response.ok) {
-    throw new Error("Erro ao buscar status do job.");
+    throw new Error(await getErrorMessage(response, "Erro ao buscar status do job."));
+  }
+
+  return response.json();
+}
+
+export async function getUsageLogs(limit = 50): Promise<UsageLogsResponse> {
+  const response = await fetch(
+    createApiUrl(`/usage-logs?limit=${limit}`),
+    getAdminRequestInit({
+      cache: "no-store",
+    }),
+  );
+
+  if (!response.ok) {
+    throw new Error(await getErrorMessage(response, "Erro ao buscar logs de uso."));
   }
 
   return response.json();

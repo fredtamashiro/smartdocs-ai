@@ -36,7 +36,7 @@ class ChatByCollectionRequest(BaseModel):
     """Representa a pergunta feita diretamente para uma collection vetorial."""
     collection_name: str = Field(
         ...,
-        description="Nome da collection no Chroma.",
+        description="Identificador da collection legada.",
     )
 
     question: str = Field(

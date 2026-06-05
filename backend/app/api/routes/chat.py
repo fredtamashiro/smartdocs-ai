@@ -1,24 +1,85 @@
-from fastapi import APIRouter, Depends, HTTPException
+import logging
 
-from app.api.dependencies import require_api_key
+from fastapi import APIRouter, HTTPException, Request
+
 from app.graph.manual_graph import answer_question_with_manual_graph
 from app.schemas.chat import ChatByCollectionRequest, ChatRequest, ChatResponse
 from app.services.document_registry_service import find_registered_document_by_id
+from app.services.rate_limit_service import check_chat_rate_limit
 from app.services.theme_service import format_theme_rules, get_theme_or_default
+from app.services.usage_log_service import (
+    EVENT_CHAT_QUESTION,
+    EVENT_RATE_LIMIT_BLOCKED,
+    create_usage_log,
+)
 
 router = APIRouter(
     prefix="/chat",
     tags=["Chat"],
 )
 
+logger = logging.getLogger(__name__)
+
 
 @router.post("/ask", response_model=ChatResponse)
 def ask_question(
+    request: Request,
     payload: ChatRequest,
-    _auth: None = Depends(require_api_key),
 ):
     """Responde uma pergunta usando o documento registrado pelo document_id."""
     try:
+        client_ip = request.client.host if request.client else "unknown"
+        rate_limit = check_chat_rate_limit(client_ip)
+
+        if not rate_limit["allowed"]:
+            logger.warning(
+                "Rate limit do chat excedido: ip=%s reason=%s ip_count=%s/%s global_count=%s/%s",
+                client_ip,
+                rate_limit["reason"],
+                rate_limit["ip_count"],
+                rate_limit["ip_limit"],
+                rate_limit["global_count"],
+                rate_limit["global_limit"],
+            )
+            create_usage_log(
+                event_type=EVENT_RATE_LIMIT_BLOCKED,
+                ip_address=client_ip,
+                document_id=payload.document_id,
+                metadata={
+                    "reason": rate_limit["reason"],
+                    "ip_count": rate_limit["ip_count"],
+                    "ip_limit": rate_limit["ip_limit"],
+                    "global_count": rate_limit["global_count"],
+                    "global_limit": rate_limit["global_limit"],
+                    "question": payload.question,
+                },
+            )
+            raise HTTPException(
+                status_code=429,
+                detail={
+                    "message": (
+                        "Limite diário de uso do chat atingido. "
+                        "Tente novamente amanhã."
+                    ),
+                    "reason": rate_limit["reason"],
+                    "ip_count": rate_limit["ip_count"],
+                    "ip_limit": rate_limit["ip_limit"],
+                    "global_count": rate_limit["global_count"],
+                    "global_limit": rate_limit["global_limit"],
+                },
+            )
+
+        create_usage_log(
+            event_type=EVENT_CHAT_QUESTION,
+            ip_address=client_ip,
+            document_id=payload.document_id,
+            metadata={
+                "question": payload.question,
+                "k": payload.k,
+                "rate_limit": rate_limit,
+            },
+        )
+
         document = find_registered_document_by_id(payload.document_id)
 
         if document is None:
@@ -44,6 +105,7 @@ def ask_question(
             collection_name=primary_collection_name,
             question=payload.question,
             k=payload.k,
+            document_id=payload.document_id,
             theme_id=theme["theme_id"],
             theme_name=theme["name"],
             query_rules=query_rules,
@@ -60,6 +122,7 @@ def ask_question(
                 collection_name=original_collection_name,
                 question=payload.question,
                 k=payload.k,
+                document_id=payload.document_id,
                 theme_id=theme["theme_id"],
                 theme_name=theme["name"],
                 query_rules=query_rules,

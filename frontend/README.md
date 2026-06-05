@@ -1,178 +1,71 @@
-# SmartDocs IA
+# SmartDocs AI Frontend
 
-Assistente inteligente para consulta de documentos em PDF usando IA Generativa, RAG, LangChain, LangGraph e uma interface web em Next.js.
+Interface web em Next.js para upload, processamento e consulta de documentos PDF usando o backend SmartDocs AI.
 
-O projeto permite fazer upload de um manual em PDF, processar o conteúdo, gerar embeddings, indexar os trechos em um banco vetorial local e realizar perguntas em linguagem natural com respostas baseadas no conteúdo do manual.
-
----
-
-## Objetivo do projeto
-
-Este projeto foi criado como estudo prático de Engenharia de IA aplicada, com foco em:
-
-- Construção de aplicações com LLMs
-- Arquitetura RAG
-- Processamento de documentos PDF
-- Geração de embeddings
-- Busca semântica com banco vetorial
-- Orquestração de fluxo com LangGraph
-- Desenvolvimento full stack com Python/FastAPI e Next.js
-
----
+O frontend permite enviar PDFs para o Smart Ingest, acompanhar jobs de processamento, listar documentos cadastrados e conversar com cada documento por meio do endpoint `/chat/ask`.
 
 ## Funcionalidades
 
 - Upload de documentos em PDF
-- Extração e limpeza de texto do PDF
-- Divisão do conteúdo em chunks
-- Persistência dos chunks em JSON
-- Geração de embeddings com OpenAI
-- Indexação em banco vetorial local com Chroma
-- Registro local dos documentos processados
-- Listagem dos manuais cadastrados
-- Chat para perguntas sobre cada manual
-- Respostas geradas com base no conteúdo recuperado
-- Exibição das fontes utilizadas na resposta
-- Filtro de relevância para evitar respostas fora do contexto
-- Histórico local de perguntas e respostas no frontend
-
----
+- Selecao de tema para o Smart Ingest
+- Acompanhamento de jobs de processamento
+- Listagem dos documentos cadastrados
+- Chat por documento
+- Exibicao de fontes usadas na resposta
+- Mensagens de erro retornadas pela API, incluindo bloqueios por rate limit
+- Historico local de perguntas e respostas na tela
 
 ## Stack utilizada
-
-### Backend
-
-- Python
-- FastAPI
-- LangChain
-- LangGraph
-- ChromaDB
-- OpenAI API
-- pypdf
-- Docker
-
-### Frontend
 
 - Next.js
 - React
 - TypeScript
 - Tailwind CSS
+- Docker
 
-### Infraestrutura local
-
-- Docker Compose
-- Volumes locais para uploads, chunks e vector store
-
----
-
-## Arquitetura geral
+## Arquitetura
 
 ```text
 Frontend Next.js
-      ↓
+      ->
 API FastAPI
-      ↓
-Upload e processamento do PDF
-      ↓
-Extração e limpeza de texto
-      ↓
-Chunking
-      ↓
-Embeddings OpenAI
-      ↓
-Chroma Vector Store
-      ↓
+      ->
+Smart Ingest
+      ->
+PostgreSQL + pgvector
+      ->
 LangGraph RAG Flow
-      ↓
+      ->
 Resposta com fontes
 ```
 
----
-
-## Fluxo RAG
-
-O fluxo principal do RAG funciona assim:
+## Fluxo principal
 
 ```text
-1. Usuário envia um PDF
-2. Backend salva o arquivo
-3. Texto é extraído página por página
-4. Texto é limpo e dividido em chunks
-5. Chunks são salvos em JSON
-6. Chunks são convertidos em embeddings
-7. Embeddings são armazenados no Chroma
-8. Usuário faz uma pergunta
-9. Sistema busca chunks semanticamente relevantes
-10. LangGraph avalia se o contexto é relevante
-11. LLM gera resposta usando somente o contexto recuperado
-12. Frontend exibe resposta e fontes
+1. Usuario envia um PDF
+2. Backend salva o arquivo localmente
+3. Texto e extraido pagina por pagina
+4. Texto e limpo e dividido em chunks
+5. Chunks sao persistidos no PostgreSQL
+6. Chunks sao enriquecidos com IA
+7. Embeddings sao gerados com OpenAI
+8. Embeddings sao armazenados no PostgreSQL com pgvector
+9. Usuario faz uma pergunta
+10. Sistema busca chunks semanticamente relevantes via pgvector
+11. LangGraph avalia se o contexto e relevante
+12. LLM gera resposta usando somente o contexto recuperado
+13. Frontend exibe resposta e fontes
 ```
 
----
+## Endpoints principais usados
 
-## Uso do LangGraph
-
-O fluxo de pergunta e resposta é orquestrado com LangGraph.
-
-```text
-retrieve_context
-      ↓
-decisão condicional
-      ├── contexto relevante → generate_answer
-      └── contexto fraco → answer_not_found
-      ↓
-format_sources
-      ↓
-resposta final
-```
-
-Essa abordagem evita que o modelo responda perguntas fora do escopo do manual quando os chunks recuperados não têm relevância suficiente.
-
----
-
-## Estrutura do projeto
-
-```text
-auto-manual-ai/
-  backend/
-    app/
-      api/
-        routes/
-      graph/
-      services/
-      schemas/
-      storage/
-    Dockerfile
-    requirements.txt
-
-  frontend/
-    app/
-    components/
-    services/
-    Dockerfile
-    package.json
-
-  docker-compose.yml
-  README.md
-```
-
----
-
-## Endpoints principais
-
-### Health check
-
-```http
-GET /health
-```
-
-### Upload, processamento e indexação de PDF
+### Upload e processamento de PDF
 
 ```http
 POST /documents/ingest
 ```
 
-Recebe um arquivo PDF, processa o conteúdo e indexa no vector store.
+Recebe um arquivo PDF, processa o conteudo e persiste chunks, enriched chunks e embeddings no PostgreSQL.
 
 ### Listagem de documentos
 
@@ -180,9 +73,9 @@ Recebe um arquivo PDF, processa o conteúdo e indexa no vector store.
 GET /documents
 ```
 
-Retorna os documentos já ingeridos.
+Retorna os documentos ja ingeridos.
 
-### Pergunta sobre um manual
+### Pergunta sobre um documento
 
 ```http
 POST /chat/ask
@@ -203,52 +96,19 @@ Exemplo de resposta:
 ```json
 {
   "question": "Como ligo o farol?",
-  "answer": "Para ligar o farol baixo, coloque o interruptor de iluminação na posição correspondente...",
+  "answer": "Para ligar o farol baixo, coloque o interruptor de iluminacao na posicao correspondente...",
   "sources": [
     {
       "page": 33,
       "chunk_index": 77,
       "score": 0.7294,
-      "preview": "Coloque o interruptor de iluminação na posição para ligar o farol baixo..."
+      "preview": "Coloque o interruptor de iluminacao na posicao para ligar o farol baixo..."
     }
   ]
 }
 ```
 
----
-
-## Como rodar o projeto
-
-### Pré-requisitos
-
-- Docker
-- Docker Compose
-- Conta na OpenAI Platform
-- API key da OpenAI
-
----
-
-## Configuração do backend
-
-Crie o arquivo:
-
-```text
-backend/.env
-```
-
-Com o conteúdo:
-
-```env
-OPENAI_API_KEY=sua_chave_aqui
-
-OPENAI_CHAT_MODEL=gpt-4o-mini
-OPENAI_EMBEDDING_MODEL=text-embedding-3-small
-MAX_RELEVANCE_SCORE=1.2
-```
-
----
-
-## Subir aplicação
+## Como rodar
 
 Na raiz do projeto:
 
@@ -266,60 +126,6 @@ Backend Swagger:
 http://localhost:8000/docs
 ```
 
----
+## Observacao sobre custos
 
-## Observação sobre custos
-
-Este projeto usa a OpenAI API para:
-
-- Geração de embeddings
-- Geração de respostas com LLM
-
-Recomenda-se usar crédito pré-pago e desabilitar recarga automática para evitar custos inesperados.
-
----
-
-## Estado atual do projeto
-
-O projeto atualmente possui um MVP funcional com:
-
-- Backend RAG funcional
-- Frontend com upload de PDF
-- Listagem de documentos
-- Chat por documento
-- Respostas com fontes
-- Controle básico de relevância
-
----
-
-## Próximos passos
-
-Possíveis evoluções:
-
-- Persistir documentos e histórico em banco de dados
-- Criar autenticação de usuários
-- Melhorar estratégia de chunking
-- Adicionar reranking
-- Adicionar observabilidade com LangFuse
-- Criar testes de qualidade com DeepEval
-- Fazer deploy em cloud
-- Suportar múltiplos provedores de LLM
-- Exibir página do PDF usada como fonte
-- Criar histórico persistente de conversas
-
----
-
-## Aprendizados aplicados
-
-Este projeto demonstra conhecimentos práticos em:
-
-- IA Generativa aplicada
-- RAG
-- LangChain
-- LangGraph
-- FastAPI
-- Vector databases
-- Embeddings
-- Next.js
-- Docker
-- Arquitetura full stack com IA
+Este projeto usa a OpenAI API para gerar embeddings e respostas com LLM. O backend possui rate limit com Redis para proteger a demo publica e controlar custo de uso.

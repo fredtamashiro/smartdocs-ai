@@ -1,132 +1,158 @@
-import json
-from datetime import datetime, timezone
-from json import JSONDecodeError
-from pathlib import Path
-from threading import Lock
 from typing import Any
-from uuid import uuid4
 
 from sqlalchemy import bindparam, text
 from sqlalchemy.dialects.postgresql import JSONB
 
 from app.database.database import SessionLocal
 
-REGISTRY_FILE = Path("app/storage/documents_registry.json")
-_REGISTRY_LOCK = Lock()
 
+def serialize_document(row) -> dict[str, Any]:
+    mapping = row._mapping if hasattr(row, "_mapping") else row
+    created_at = mapping["created_at"]
+    updated_at = mapping["updated_at"]
 
-def load_documents_registry() -> list[dict[str, Any]]:
-    """Carrega do disco a lista de documentos ja registrados."""
-    if not REGISTRY_FILE.exists():
-        return []
-
-    try:
-        with REGISTRY_FILE.open("r", encoding="utf-8") as file:
-            data = json.load(file)
-    except JSONDecodeError as error:
-        raise ValueError("Registry de documentos esta corrompido.") from error
-
-    if not isinstance(data, list):
-        raise ValueError("Registry de documentos deve conter uma lista.")
-
-    return data
-
-
-def _write_documents_registry(documents: list[dict[str, Any]]) -> None:
-    """Grava o registry em disco usando arquivo temporario para evitar corrupcao."""
-    REGISTRY_FILE.parent.mkdir(parents=True, exist_ok=True)
-
-    temp_file = REGISTRY_FILE.with_name(f"{REGISTRY_FILE.name}.{uuid4()}.tmp")
-
-    with temp_file.open("w", encoding="utf-8") as file:
-        json.dump(documents, file, ensure_ascii=False, indent=2)
-
-    temp_file.replace(REGISTRY_FILE)
-
-
-def save_documents_registry(documents: list[dict[str, Any]]) -> None:
-    """Salva a lista completa de documentos protegendo a escrita com lock."""
-    with _REGISTRY_LOCK:
-        _write_documents_registry(documents)
-
-
-def register_document(document_data: dict[str, Any]) -> dict[str, Any]:
-    """Adiciona um documento processado ao registry local da aplicacao."""
-    registered_document = {
-        "document_id": document_data["document_id"],
-        "collection_name": document_data["collection_name"],
-        "original_filename": document_data["original_filename"],
-        "stored_filename": document_data["stored_filename"],
-        "file_path": document_data["file_path"],
-        "chunks_file": document_data["chunks_file"],
-        "total_pages": document_data["total_pages"],
-        "total_chars": document_data["total_chars"],
-        "total_chunks": document_data["total_chunks"],
-        "created_at": datetime.now(timezone.utc).isoformat(),
+    return {
+        "document_id": str(mapping["id"]),
+        "collection_name": mapping["collection_name"],
+        "original_filename": mapping["original_filename"],
+        "stored_filename": mapping["stored_filename"],
+        "file_path": mapping["file_path"],
+        "storage_url": mapping["storage_url"],
+        "chunks_file": mapping["chunks_file"],
+        "enriched_chunks_file": mapping["enriched_chunks_file"],
+        "enriched_collection_name": mapping["enriched_collection_name"],
+        "retrieval_mode": mapping["retrieval_mode"],
+        "theme_id": mapping["theme_id"],
+        "theme_name": mapping["theme_name"],
+        "total_pages": mapping["total_pages"] or 0,
+        "total_chars": mapping["total_chars"] or 0,
+        "total_chunks": mapping["total_chunks"] or 0,
+        "document_summary": mapping["document_summary"],
+        "document_type": mapping["document_type"],
+        "main_topics": mapping["main_topics"] or [],
+        "suggested_questions": mapping["suggested_questions"] or [],
+        "summary_limitations": mapping["summary_limitations"] or [],
+        "status": mapping["status"],
+        "created_at": created_at.isoformat() if created_at else None,
+        "updated_at": updated_at.isoformat() if updated_at else None,
     }
 
-    if "theme_id" in document_data:
-        registered_document["theme_id"] = document_data["theme_id"]
 
-    if "theme_name" in document_data:
-        registered_document["theme_name"] = document_data["theme_name"]
-
-    if "document_summary" in document_data:
-        registered_document["document_summary"] = document_data["document_summary"]
-
-    if "document_type" in document_data:
-        registered_document["document_type"] = document_data["document_type"]
-
-    if "main_topics" in document_data:
-        registered_document["main_topics"] = document_data["main_topics"]
-
-    if "suggested_questions" in document_data:
-        registered_document["suggested_questions"] = document_data[
-            "suggested_questions"
-        ]
-
-    if "summary_limitations" in document_data:
-        registered_document["summary_limitations"] = document_data[
-            "summary_limitations"
-        ]
-
-    with _REGISTRY_LOCK:
-        documents = load_documents_registry()
-        documents.append(registered_document)
-
-        _write_documents_registry(documents)
-
-    update_document_in_database(document_data)
-
-    return registered_document
+DOCUMENT_COLUMNS = """
+    id,
+    collection_name,
+    original_filename,
+    stored_filename,
+    file_path,
+    storage_url,
+    chunks_file,
+    enriched_chunks_file,
+    enriched_collection_name,
+    retrieval_mode,
+    theme_id,
+    theme_name,
+    total_pages,
+    total_chars,
+    total_chunks,
+    document_summary,
+    document_type,
+    main_topics,
+    suggested_questions,
+    summary_limitations,
+    status,
+    created_at,
+    updated_at
+"""
 
 
-def update_document_in_database(document_data: dict[str, Any]) -> None:
+def list_registered_documents() -> list[dict[str, Any]]:
+    with SessionLocal() as db:
+        rows = db.execute(
+            text(
+                f"""
+                SELECT {DOCUMENT_COLUMNS}
+                FROM smartdocs.documents
+                WHERE status = 'active'
+                ORDER BY created_at DESC
+                """
+            )
+        ).fetchall()
+
+    return [serialize_document(row) for row in rows]
+
+
+def register_document(document_payload: dict[str, Any]) -> dict[str, Any]:
     query = text(
-        """
-        UPDATE smartdocs.documents
-        SET
-            original_filename = :original_filename,
-            stored_filename = :stored_filename,
-            file_path = :file_path,
-            collection_name = :collection_name,
-            enriched_collection_name = :enriched_collection_name,
-            retrieval_mode = :retrieval_mode,
-            theme_id = :theme_id,
-            theme_name = :theme_name,
-            total_pages = :total_pages,
-            total_chars = :total_chars,
-            total_chunks = :total_chunks,
-            chunks_file = :chunks_file,
-            enriched_chunks_file = :enriched_chunks_file,
-            document_summary = :document_summary,
-            document_type = :document_type,
-            main_topics = :main_topics,
-            suggested_questions = :suggested_questions,
-            summary_limitations = :summary_limitations,
-            status = :status,
+        f"""
+        INSERT INTO smartdocs.documents (
+            id,
+            collection_name,
+            original_filename,
+            stored_filename,
+            file_path,
+            storage_url,
+            chunks_file,
+            enriched_chunks_file,
+            enriched_collection_name,
+            retrieval_mode,
+            theme_id,
+            theme_name,
+            total_pages,
+            total_chars,
+            total_chunks,
+            document_summary,
+            document_type,
+            main_topics,
+            suggested_questions,
+            summary_limitations,
+            status
+        )
+        VALUES (
+            CAST(:document_id AS UUID),
+            :collection_name,
+            :original_filename,
+            :stored_filename,
+            :file_path,
+            :storage_url,
+            :chunks_file,
+            :enriched_chunks_file,
+            :enriched_collection_name,
+            :retrieval_mode,
+            :theme_id,
+            :theme_name,
+            :total_pages,
+            :total_chars,
+            :total_chunks,
+            :document_summary,
+            :document_type,
+            :main_topics,
+            :suggested_questions,
+            :summary_limitations,
+            :status
+        )
+        ON CONFLICT (id) DO UPDATE SET
+            collection_name = EXCLUDED.collection_name,
+            original_filename = EXCLUDED.original_filename,
+            stored_filename = EXCLUDED.stored_filename,
+            file_path = EXCLUDED.file_path,
+            storage_url = EXCLUDED.storage_url,
+            chunks_file = EXCLUDED.chunks_file,
+            enriched_chunks_file = EXCLUDED.enriched_chunks_file,
+            enriched_collection_name = EXCLUDED.enriched_collection_name,
+            retrieval_mode = EXCLUDED.retrieval_mode,
+            theme_id = EXCLUDED.theme_id,
+            theme_name = EXCLUDED.theme_name,
+            total_pages = EXCLUDED.total_pages,
+            total_chars = EXCLUDED.total_chars,
+            total_chunks = EXCLUDED.total_chunks,
+            document_summary = EXCLUDED.document_summary,
+            document_type = EXCLUDED.document_type,
+            main_topics = EXCLUDED.main_topics,
+            suggested_questions = EXCLUDED.suggested_questions,
+            summary_limitations = EXCLUDED.summary_limitations,
+            status = EXCLUDED.status,
             updated_at = NOW()
-        WHERE id = CAST(:document_id AS UUID)
+        RETURNING {DOCUMENT_COLUMNS}
         """
     ).bindparams(
         bindparam("main_topics", type_=JSONB),
@@ -135,83 +161,167 @@ def update_document_in_database(document_data: dict[str, Any]) -> None:
     )
 
     with SessionLocal() as db:
-        db.execute(
+        row = db.execute(
             query,
             {
-                "document_id": document_data["document_id"],
-                "original_filename": document_data["original_filename"],
-                "stored_filename": document_data["stored_filename"],
-                "file_path": document_data["file_path"],
-                "collection_name": document_data.get("collection_name"),
-                "enriched_collection_name": document_data.get(
+                "document_id": document_payload["document_id"],
+                "collection_name": document_payload.get("collection_name"),
+                "original_filename": document_payload["original_filename"],
+                "stored_filename": document_payload["stored_filename"],
+                "file_path": document_payload.get("file_path"),
+                "storage_url": document_payload.get("storage_url"),
+                "chunks_file": document_payload.get("chunks_file"),
+                "enriched_chunks_file": document_payload.get(
+                    "enriched_chunks_file"
+                ),
+                "enriched_collection_name": document_payload.get(
                     "enriched_collection_name"
                 ),
-                "retrieval_mode": document_data.get("retrieval_mode", "enriched"),
-                "theme_id": document_data.get("theme_id"),
-                "theme_name": document_data.get("theme_name"),
-                "total_pages": document_data.get("total_pages", 0),
-                "total_chars": document_data.get("total_chars", 0),
-                "total_chunks": document_data.get("total_chunks", 0),
-                "chunks_file": document_data.get("chunks_file"),
-                "enriched_chunks_file": document_data.get("enriched_chunks_file"),
-                "document_summary": document_data.get("document_summary"),
-                "document_type": document_data.get("document_type"),
-                "main_topics": document_data.get("main_topics", []),
-                "suggested_questions": document_data.get("suggested_questions", []),
-                "summary_limitations": document_data.get("summary_limitations", []),
-                "status": document_data.get("status", "active"),
+                "retrieval_mode": document_payload.get("retrieval_mode", "pgvector"),
+                "theme_id": document_payload.get("theme_id"),
+                "theme_name": document_payload.get("theme_name"),
+                "total_pages": document_payload.get("total_pages", 0),
+                "total_chars": document_payload.get("total_chars", 0),
+                "total_chunks": document_payload.get("total_chunks", 0),
+                "document_summary": document_payload.get("document_summary"),
+                "document_type": document_payload.get("document_type"),
+                "main_topics": document_payload.get("main_topics", []),
+                "suggested_questions": document_payload.get(
+                    "suggested_questions",
+                    [],
+                ),
+                "summary_limitations": document_payload.get(
+                    "summary_limitations",
+                    [],
+                ),
+                "status": document_payload.get("status", "active"),
             },
-        )
+        ).fetchone()
         db.commit()
 
-
-def list_registered_documents() -> list[dict[str, Any]]:
-    """Retorna todos os documentos registrados."""
-    return load_documents_registry()
+    return serialize_document(row)
 
 
 def find_registered_document_by_id(document_id: str) -> dict[str, Any] | None:
-    """Busca um documento registrado pelo seu document_id."""
-    documents = load_documents_registry()
+    with SessionLocal() as db:
+        row = db.execute(
+            text(
+                f"""
+                SELECT {DOCUMENT_COLUMNS}
+                FROM smartdocs.documents
+                WHERE id = CAST(:document_id AS UUID)
+                """
+            ),
+            {"document_id": document_id},
+        ).fetchone()
 
-    for document in documents:
-        if document["document_id"] == document_id:
-            return document
+    if row is None:
+        return None
 
-    return None
+    return serialize_document(row)
 
 
 def delete_registered_document(document_id: str) -> dict[str, Any]:
-    documents = load_documents_registry()
+    with SessionLocal() as db:
+        row = db.execute(
+            text(
+                f"""
+                DELETE FROM smartdocs.documents
+                WHERE id = CAST(:document_id AS UUID)
+                RETURNING {DOCUMENT_COLUMNS}
+                """
+            ),
+            {"document_id": document_id},
+        ).fetchone()
+        db.commit()
 
-    for index, document in enumerate(documents):
-        if document["document_id"] == document_id:
-            removed_document = documents.pop(index)
-            save_documents_registry(documents)
+    if row is None:
+        raise ValueError("Documento não encontrado.")
 
-            return removed_document
+    return serialize_document(row)
 
-    raise ValueError("Documento não encontrado.")
+
+def delete_document_from_database(document_id: str) -> None:
+    with SessionLocal() as db:
+        db.execute(
+            text(
+                """
+                DELETE FROM smartdocs.documents
+                WHERE id = CAST(:document_id AS UUID)
+                """
+            ),
+            {"document_id": document_id},
+        )
+        db.commit()
 
 
 def update_registered_document(
     document_id: str,
     updates: dict[str, Any],
 ) -> dict[str, Any]:
-    """Atualiza campos de um documento ja registrado."""
-    documents = load_documents_registry()
+    allowed_fields = {
+        "collection_name",
+        "original_filename",
+        "stored_filename",
+        "file_path",
+        "storage_url",
+        "chunks_file",
+        "enriched_chunks_file",
+        "enriched_collection_name",
+        "retrieval_mode",
+        "theme_id",
+        "theme_name",
+        "total_pages",
+        "total_chars",
+        "total_chunks",
+        "document_summary",
+        "document_type",
+        "main_topics",
+        "suggested_questions",
+        "summary_limitations",
+        "status",
+    }
+    safe_updates = {
+        key: value
+        for key, value in updates.items()
+        if key in allowed_fields
+    }
 
-    for index, document in enumerate(documents):
-        if document["document_id"] == document_id:
-            updated_document = {
-                **document,
-                **updates,
-                "updated_at": datetime.now(timezone.utc).isoformat(),
-            }
+    if not safe_updates:
+        current_document = find_registered_document_by_id(document_id)
 
-            documents[index] = updated_document
-            save_documents_registry(documents)
+        if current_document is None:
+            raise ValueError("Documento não encontrado.")
 
-            return updated_document
+        return current_document
 
-    raise ValueError("Documento não encontrado.")
+    assignments = []
+    parameters: dict[str, Any] = {"document_id": document_id}
+
+    for field, value in safe_updates.items():
+        assignments.append(f"{field} = :{field}")
+        parameters[field] = value
+
+    query = text(
+        f"""
+        UPDATE smartdocs.documents
+        SET
+            {", ".join(assignments)},
+            updated_at = NOW()
+        WHERE id = CAST(:document_id AS UUID)
+        RETURNING {DOCUMENT_COLUMNS}
+        """
+    ).bindparams(
+        bindparam("main_topics", type_=JSONB, required=False),
+        bindparam("suggested_questions", type_=JSONB, required=False),
+        bindparam("summary_limitations", type_=JSONB, required=False),
+    )
+
+    with SessionLocal() as db:
+        row = db.execute(query, parameters).fetchone()
+        db.commit()
+
+    if row is None:
+        raise ValueError("Documento não encontrado.")
+
+    return serialize_document(row)

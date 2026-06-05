@@ -1,6 +1,7 @@
 from functools import lru_cache
 from pathlib import Path
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings
 
 
@@ -17,7 +18,28 @@ class Settings(BaseSettings):
     max_display_source_score: float = 1.0
     display_source_score_margin: float = 0.15
     max_upload_file_size_mb: int = 10
+    min_enriched_chunk_quality_score: float = 0.5
     database_url: str = "postgresql://smartdocs:smartdocs@postgres:5432/smartdocs"
+    redis_url: str = "redis://redis:6379/0"
+    chat_rate_limit_per_ip_daily: int = 30
+    chat_rate_limit_global_daily: int = 300
+    jwt_secret_key: str = "change-me"
+    jwt_algorithm: str = "HS256"
+    jwt_access_token_expire_minutes: int = 60
+    jwt_cookie_name: str = "smartdocs_admin_access_token"
+    frontend_origins: str = "http://localhost:2000"
+    cookie_domain: str | None = None
+    cookie_secure: bool = False
+    cookie_samesite: str = "lax"
+
+    @field_validator("cookie_domain", mode="before")
+    @classmethod
+    def normalize_cookie_domain(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+
+        normalized = value.strip()
+        return normalized or None
 
     class Config:
         """Configura como o Pydantic carrega variaveis do arquivo .env."""

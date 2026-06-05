@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
@@ -57,8 +57,12 @@ export function DocumentChat({
         ]);
 
         setQuestion("");
-      } catch {
-        setErrorMessage("Não foi possível obter uma resposta.");
+      } catch (error) {
+        setErrorMessage(
+          error instanceof Error
+            ? error.message
+            : "Não foi possível obter uma resposta.",
+        );
       } finally {
         setIsLoading(false);
       }
@@ -183,13 +187,13 @@ export function DocumentChat({
                         className="rounded-lg border border-slate-200 bg-white p-3"
                       >
                         <div className="mb-2 flex flex-wrap gap-3 text-xs text-slate-500">
-                          <span>Página: {source.page}</span>
+                          <span>PÃ¡gina: {source.page}</span>
                           <span>Chunk: {source.chunk_index}</span>
                           <span>Score: {source.score.toFixed(4)}</span>
 
                           {source.relevance_score !== undefined && (
                             <span>
-                              Relevância: {source.relevance_score.toFixed(2)}
+                              RelevÃ¢ncia: {source.relevance_score.toFixed(2)}
                             </span>
                           )}
                         </div>
@@ -202,7 +206,7 @@ export function DocumentChat({
 
                         {source.relevance_reason && (
                           <p className="mb-2 text-xs leading-5 text-emerald-700">
-                            Motivo da relevância: {source.relevance_reason}
+                            Motivo da relevÃ¢ncia: {source.relevance_reason}
                           </p>
                         )}
 
@@ -221,3 +225,4 @@ export function DocumentChat({
     </div>
   );
 }
+

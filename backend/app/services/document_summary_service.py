@@ -6,7 +6,7 @@ from langchain_openai import ChatOpenAI
 
 from app.config import get_settings
 from app.services.theme_service import format_theme_rules, get_theme_or_default
-from app.services.vector_store_service import load_enriched_chunks_payload
+from app.services.pgvector_index_service import load_enriched_chunks_payload
 
 
 def load_enriched_chunks_file(enriched_chunks_file: str) -> dict[str, Any]:

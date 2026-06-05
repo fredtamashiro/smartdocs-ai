@@ -3,6 +3,7 @@ from pathlib import Path
 
 from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, HTTPException, UploadFile
 
+from app.api.admin_auth import require_admin_user
 from app.api.dependencies import require_api_key
 from app.services.chunk_enrichment_service import (
     enrich_all_chunks_file,
@@ -12,19 +13,14 @@ from app.services.chunk_enrichment_service import (
 from app.services.chunk_service import save_chunks_to_json, split_text_into_chunks
 from app.services.document_registry_service import (
     delete_registered_document,
+    find_registered_document_by_id,
     list_registered_documents,
     register_document,
-    update_registered_document,
 )
 from app.services.document_service import extract_text_from_pdf, save_uploaded_file
 from app.services.document_summary_service import generate_document_summary
 from app.services.theme_service import find_theme_by_id
-from app.services.vector_store_service import (
-    delete_vectorstore_collection,
-    index_chunks_in_vectorstore,
-    index_enriched_chunks_in_vectorstore,
-    search_similar_chunks,
-)
+from app.services.pgvector_index_service import index_enriched_chunks_in_pgvector
 
 from app.services.processing_job_service import (
     STATUS_COMPLETED,
@@ -33,11 +29,11 @@ from app.services.processing_job_service import (
     create_processing_job,
     update_processing_job,
 )
+from app.services.pgvector_search_service import search_similar_chunks_pgvector
 
 logger = logging.getLogger(__name__)
 
 UPLOADS_DIR = Path("app/storage/uploads").resolve()
-CHUNKS_DIR = Path("app/storage/chunks").resolve()
 
 router = APIRouter(
     prefix="/documents",
@@ -158,7 +154,7 @@ def run_smart_ingest_job(
             job_id,
             {
                 "progress": 80,
-                "current_step": "Indexando chunks enriquecidos no vector store",
+                "current_step": "Indexando chunks enriquecidos no pgvector",
                 "partial_result": {
                     "chunks_file": saved_chunks["chunks_file"],
                     "enriched_chunks_file": enriched_chunks["enriched_chunks_file"],
@@ -168,7 +164,7 @@ def run_smart_ingest_job(
             },
         )
 
-        indexed_document = index_enriched_chunks_in_vectorstore(
+        indexed_document = index_enriched_chunks_in_pgvector(
             enriched_chunks_file=enriched_chunks["enriched_chunks_file"],
         )
 
@@ -197,7 +193,7 @@ def run_smart_ingest_job(
             "document_id": indexed_document["document_id"],
             "collection_name": indexed_document["collection_name"],
             "enriched_collection_name": indexed_document["collection_name"],
-            "retrieval_mode": "enriched",
+            "retrieval_mode": "pgvector",
             "theme_id": theme["theme_id"],
             "theme_name": theme["name"],
             "total_pages": extracted_text["total_pages"],
@@ -225,12 +221,17 @@ def run_smart_ingest_job(
                 "current_step": "Processamento concluÃ­do",
                 "result": {
                     "document": registered_document,
-                    "vectorstore_dir": indexed_document["vectorstore_dir"],
+                    "retrieval_backend": "pgvector",
+                    "total_enriched_chunks": indexed_document.get(
+                        "total_enriched_chunks"
+                    ),
+                    "total_embeddings": indexed_document.get("total_embeddings"),
                     "total_indexed_documents": indexed_document.get(
                         "total_indexed_documents",
                         indexed_document.get("total_documents"),
                     ),
                     "total_skipped_chunks": indexed_document.get("total_skipped_chunks"),
+                    "skipped_chunks": indexed_document.get("skipped_chunks", []),
                 },
             },
         )
@@ -262,9 +263,14 @@ def list_documents():
 @router.delete("/{document_id}")
 def delete_document(
     document_id: str,
-    _auth: None = Depends(require_api_key),
+    _admin_user: dict = Depends(require_admin_user),
 ):
     try:
+        document = find_registered_document_by_id(document_id)
+
+        if document is None:
+            raise ValueError("Documento não encontrado.")
+
         removed_document = delete_registered_document(document_id)
 
         deleted_files = []
@@ -286,24 +292,10 @@ def delete_document(
                     }
                 )
 
-        deleted_collections = []
-
-        collection_names = {
-            removed_document.get("collection_name"),
-            removed_document.get("enriched_collection_name"),
-        }
-
-        for collection_name in collection_names:
-            if collection_name:
-                deleted_collections.append(
-                    delete_vectorstore_collection(collection_name)
-                )
-
         return {
             "message": "Documento apagado com sucesso.",
             "document_id": document_id,
             "deleted_files": deleted_files,
-            "deleted_collections": deleted_collections,
             "removed_document": removed_document,
         }
 
@@ -409,76 +401,34 @@ def process_document(
 
     except ValueError as error:
         raise HTTPException(status_code=400, detail=str(error))
-
-
-@router.post("/index")
-def index_document_chunks(
-    chunks_file: str,
-    _auth: None = Depends(require_api_key),
-):
-    """Indexa um arquivo de chunks no vector store."""
-    try:
-        if chunks_file.startswith("db://chunks/"):
-            safe_chunks_file = chunks_file
-        else:
-            safe_chunks_file = ensure_path_inside_directory(
-                path_value=chunks_file,
-                base_dir=CHUNKS_DIR,
-                label="chunks_file",
-            )
-
-        result = index_chunks_in_vectorstore(safe_chunks_file)
-
-        return {
-            "message": "Chunks indexados com sucesso no vector store.",
-            "document_id": result["document_id"],
-            "collection_name": result["collection_name"],
-            "total_documents": result["total_documents"],
-            "vectorstore_dir": result["vectorstore_dir"],
-        }
-
-    except ValueError as error:
-        raise HTTPException(status_code=400, detail=str(error))
-
-
-@router.post("/search")
-def search_document_chunks(
-    collection_name: str,
+@router.post("/{document_id}/search-pgvector")
+def search_document_pgvector(
+    document_id: str,
     query: str,
     k: int = 4,
     _auth: None = Depends(require_api_key),
 ):
-    """Busca no vector store os chunks mais parecidos com a pergunta."""
     try:
-        results = search_similar_chunks(
-            collection_name=collection_name,
+        results = search_similar_chunks_pgvector(
+            document_id=document_id,
             query=query,
             k=k,
         )
 
-        preview_results = []
-
-        for item in results:
-            preview_results.append(
-                {
-                    "page": item["metadata"].get("page"),
-                    "chunk_index": item["metadata"].get("chunk_index"),
-                    "score": item["score"],
-                    "preview": item["content"][:500],
-                    "metadata": item["metadata"],
-                }
-            )
-
         return {
-            "message": "Busca semÃ¢ntica realizada com sucesso.",
-            "collection_name": collection_name,
+            "document_id": document_id,
             "query": query,
-            "total_results": len(results),
-            "results": preview_results,
+            "k": k,
+            "total": len(results),
+            "results": results,
         }
 
-    except ValueError as error:
-        raise HTTPException(status_code=400, detail=str(error))
+    except Exception as error:
+        logger.exception("Erro ao buscar chunks com pgvector")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Erro ao buscar chunks com pgvector: {error}",
+        )
 
 
 @router.post("/enrich-chunks")
@@ -508,42 +458,6 @@ def enrich_document_chunks(
 
     except ValueError as error:
         raise HTTPException(status_code=400, detail=str(error))
-
-
-@router.post("/index-enriched")
-def index_enriched_document_chunks(
-    enriched_chunks_file: str,
-    register_as_active: bool = False,
-):
-    """Indexa chunks enriquecidos e opcionalmente os ativa para uso no chat."""
-    try:
-        result = index_enriched_chunks_in_vectorstore(enriched_chunks_file)
-
-        updated_document = None
-
-        if register_as_active:
-            updated_document = update_registered_document(
-                document_id=result["document_id"],
-                updates={
-                    "enriched_collection_name": result["collection_name"],
-                    "retrieval_mode": "enriched",
-                    "enriched_chunks_file": enriched_chunks_file,
-                },
-            )
-
-        return {
-            "message": "Chunks enriquecidos indexados com sucesso no vector store.",
-            "document_id": result["document_id"],
-            "collection_name": result["collection_name"],
-            "total_documents": result["total_documents"],
-            "vectorstore_dir": result["vectorstore_dir"],
-            "registered_as_active": register_as_active,
-            "document": updated_document,
-        }
-
-    except ValueError as error:
-        raise HTTPException(status_code=400, detail=str(error))
-
 
 @router.post("/enrich-chunks-batch")
 def enrich_document_chunks_batch(
@@ -619,7 +533,7 @@ def start_smart_ingest(
     chunk_size: int = Form(1000),
     chunk_overlap: int = Form(200),
     batch_size: int = Form(10),
-    _auth: None = Depends(require_api_key),
+    _admin_user: dict = Depends(require_admin_user),
 ):
     try:
         theme = find_theme_by_id(theme_id)
@@ -667,3 +581,5 @@ def start_smart_ingest(
             status_code=500,
             detail=f"Erro inesperado ao iniciar smart ingest: {error}",
         )
+
+

@@ -9,7 +9,7 @@ from sqlalchemy.dialects.postgresql import JSONB
 
 from app.config import get_settings
 from app.database.database import SessionLocal
-from app.services.vector_store_service import load_chunks_from_json
+from app.services.pgvector_index_service import load_chunks_from_json
 from app.services.theme_service import format_theme_rules, get_theme_or_default
 
 DB_ENRICHED_CHUNKS_URI_PREFIX = "db://enriched_chunks/"
