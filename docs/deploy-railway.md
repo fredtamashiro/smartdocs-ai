@@ -1,5 +1,11 @@
 # Deploy Railway — SmartDocs AI
 
+## Documentos relacionados
+
+- [Serviços Railway](C:/IA/auto-manual-ai/docs/railway-services.md:1)
+- [Checklist de Pré-Deploy](C:/IA/auto-manual-ai/docs/pre-deploy-checklist.md:1)
+- [Checklist Operacional Railway](C:/IA/auto-manual-ai/docs/railway-deploy-checklist.md:1)
+
 ## Visão geral da arquitetura
 
 - `smartdocs-frontend`: Next.js

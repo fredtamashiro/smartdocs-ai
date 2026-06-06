@@ -12,27 +12,46 @@ env/
 
 # Environment variables
 .env
+.env.local
+.env.*.local
 .env.*
 backend/.env
 !.env.example
 !backend/.env.example
+!frontend/.env.example
 
-# FastAPI / local runtime
+# FastAPI / local runtime / logs
 *.log
+logs/
+*.out
+*.err
 
-# Uploaded files
+# Node / Next
+node_modules/
+.next/
+
+# Uploaded files / generated artifacts
 backend/app/storage/uploads/*
 !backend/app/storage/uploads/.gitkeep
+backend/app/storage/chunks/
+backend/app/storage/enriched_chunks/
+backend/app/storage/vectorstore/
 
 # Test and tooling caches
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+.cache/
+.turbo/
 .coverage
 htmlcov/
 
 # Docker
 *.pid
+
+# PDFs de teste
+*test*.pdf
+*sample*.pdf
 
 # IDE / OS
 .vscode/

@@ -1,5 +1,11 @@
 # Pré-Deploy Checklist — SmartDocs AI
 
+## Documentos relacionados
+
+- [Deploy Railway](C:/IA/auto-manual-ai/docs/deploy-railway.md:1)
+- [Serviços Railway](C:/IA/auto-manual-ai/docs/railway-services.md:1)
+- [Checklist Operacional Railway](C:/IA/auto-manual-ai/docs/railway-deploy-checklist.md:1)
+
 ## Segurança
 
 - [ ] confirmar que `.env` não está versionado

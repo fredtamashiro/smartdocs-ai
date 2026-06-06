@@ -1,5 +1,11 @@
 # Serviços Railway — SmartDocs AI
 
+## Documentos relacionados
+
+- [Deploy Railway](C:/IA/auto-manual-ai/docs/deploy-railway.md:1)
+- [Checklist de Pré-Deploy](C:/IA/auto-manual-ai/docs/pre-deploy-checklist.md:1)
+- [Checklist Operacional Railway](C:/IA/auto-manual-ai/docs/railway-deploy-checklist.md:1)
+
 ## Visão geral
 
 O deploy do SmartDocs AI no Railway deve ser dividido em serviços separados para isolar responsabilidades, facilitar observabilidade e permitir escala independente de cada componente.

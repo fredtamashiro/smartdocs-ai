@@ -42,6 +42,14 @@ Documentação visual:
 
 - [docs/architecture.md](C:/IA/auto-manual-ai/docs/architecture.md:1)
 
+## Documentação
+
+- [docs/architecture.md](C:/IA/auto-manual-ai/docs/architecture.md:1)
+- [docs/deploy-railway.md](C:/IA/auto-manual-ai/docs/deploy-railway.md:1)
+- [docs/railway-services.md](C:/IA/auto-manual-ai/docs/railway-services.md:1)
+- [docs/railway-deploy-checklist.md](C:/IA/auto-manual-ai/docs/railway-deploy-checklist.md:1)
+- [docs/pre-deploy-checklist.md](C:/IA/auto-manual-ai/docs/pre-deploy-checklist.md:1)
+
 ## Fluxo Smart Ingest
 
 - Upload PDF
