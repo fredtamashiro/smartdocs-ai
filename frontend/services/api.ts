@@ -1,7 +1,11 @@
-const API_URL =
-  process.env.INTERNAL_API_URL ||
-  process.env.NEXT_PUBLIC_API_URL ||
-  "http://localhost:8000";
+const browserApiUrl =
+  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+
+const serverApiUrl =
+  process.env.INTERNAL_API_URL ?? browserApiUrl;
+
+export const API_URL =
+  typeof window === "undefined" ? serverApiUrl : browserApiUrl;
 
 type JsonValue =
   | string
