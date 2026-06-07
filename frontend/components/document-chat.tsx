@@ -6,6 +6,7 @@ import ReactMarkdown from "react-markdown";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { normalizeUtf8Text } from "@/lib/text";
 import { askQuestion, ChatResponse } from "@/services/api";
 
 type DocumentChatProps = {
@@ -118,7 +119,7 @@ export function DocumentChat({
                   Pergunta
                 </p>
                 <p className="mt-2 text-sm leading-6 text-slate-700">
-                  {message.question}
+                  {normalizeUtf8Text(message.question)}
                 </p>
               </div>
 
@@ -169,7 +170,7 @@ export function DocumentChat({
                       ),
                     }}
                   >
-                    {message.answer}
+                    {normalizeUtf8Text(message.answer)}
                   </ReactMarkdown>
                 </div>
               </div>
@@ -187,31 +188,32 @@ export function DocumentChat({
                         className="rounded-lg border border-slate-200 bg-white p-3"
                       >
                         <div className="mb-2 flex flex-wrap gap-3 text-xs text-slate-500">
-                          <span>PÃ¡gina: {source.page}</span>
+                          <span>Página: {source.page}</span>
                           <span>Chunk: {source.chunk_index}</span>
                           <span>Score: {source.score.toFixed(4)}</span>
 
                           {source.relevance_score !== undefined && (
                             <span>
-                              RelevÃ¢ncia: {source.relevance_score.toFixed(2)}
+                              Relevância: {source.relevance_score.toFixed(2)}
                             </span>
                           )}
                         </div>
 
                         {source.matched_query && (
                           <p className="mb-2 text-xs text-blue-700">
-                            Query usada: {source.matched_query}
+                            Query usada: {normalizeUtf8Text(source.matched_query)}
                           </p>
                         )}
 
                         {source.relevance_reason && (
                           <p className="mb-2 text-xs leading-5 text-emerald-700">
-                            Motivo da relevÃ¢ncia: {source.relevance_reason}
+                            Motivo da relevância:{" "}
+                            {normalizeUtf8Text(source.relevance_reason)}
                           </p>
                         )}
 
                         <p className="text-xs leading-5 text-slate-600">
-                          {source.preview}
+                          {normalizeUtf8Text(source.preview)}
                         </p>
                       </div>
                     ))}
