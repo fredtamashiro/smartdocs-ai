@@ -132,13 +132,7 @@ O guia inicial de deploy está em:
 
 ## Roadmap
 
-- Painel admin de métricas
-- Melhorias de UX
-- Exportação de respostas
-- Suporte a múltiplos projetos / demos
-- Storage externo opcional
-- Avaliação automatizada de respostas
-- Experimento futuro com QA extrativo Hugging Face
+As próximas melhorias planejadas para o SmartDocs AI estão documentadas em [docs/roadmap.md](docs/roadmap.md).
 
 ## Status
 
