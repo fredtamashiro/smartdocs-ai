@@ -115,6 +115,9 @@ export function AppHeader({
           </Button>
         )}
       </div>
+      <div className="mx-auto max-w-7xl md:hidden">
+        <AppNavigation mobile />
+      </div>
     </header>
   );
 }

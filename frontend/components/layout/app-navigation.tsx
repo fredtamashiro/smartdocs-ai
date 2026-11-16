@@ -8,17 +8,18 @@ import { cn } from "@/lib/utils";
 export const appNavItems = [
   { label: "Início", href: "/" },
   { label: "Ver Demo", href: "/documentos" },
+  { label: "Observabilidade", href: "/observabilidade" },
 ] as const;
 
 function isActiveItem(href: string, pathname: string): boolean {
   return pathname === href;
 }
 
-export function AppNavigation() {
+export function AppNavigation({ mobile = false }: { mobile?: boolean }) {
   const pathname = usePathname();
 
   return (
-    <nav className="hidden items-center gap-8 md:flex">
+    <nav aria-label={mobile ? "Navegação móvel" : "Navegação principal"} className={mobile ? "flex items-center gap-5 overflow-x-auto px-6 pb-3 md:hidden" : "hidden items-center gap-8 md:flex"}>
       {appNavItems.map((item) => {
         const isActive = isActiveItem(item.href, pathname);
 

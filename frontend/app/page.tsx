@@ -11,6 +11,7 @@ import { CapabilityCards } from "@/components/home/capability-cards";
 import { DeploySection } from "@/components/home/deploy-section";
 import { HeroSection } from "@/components/home/hero-section";
 import { MvpHighlights } from "@/components/home/mvp-highlights";
+import { ObservabilityHighlight } from "@/components/home/observability-highlight";
 import { PageContainer } from "@/components/layout/page-container";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAdminSession } from "@/hooks/use-admin-session";
@@ -42,7 +43,7 @@ export default function Home() {
         onLoggedIn={handleLoggedIn}
       />
 
-      <main className="min-h-screen bg-[var(--background)] pt-28 text-[var(--foreground)]">
+      <main className="min-h-screen bg-[var(--background)] pt-32 text-[var(--foreground)] md:pt-28">
         <section id="home" className="scroll-mt-28 bg-[var(--background)] py-10">
           <PageContainer className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
             <HeroSection />
@@ -67,6 +68,7 @@ export default function Home() {
           <ArchitectureFlow />
         </section>
         <MvpHighlights />
+        <ObservabilityHighlight />
         <DeploySection />
       </main>
 

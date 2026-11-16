@@ -46,6 +46,7 @@ Documentação visual:
 
 - `/`: landing page do projeto, com foco em apresentação, arquitetura e deploy
 - `/documentos`: workspace de consulta, com seleção de documento, resumo, tópicos, histórico local de perguntas, respostas com fontes e ações administrativas para upload e delete
+- `/observabilidade`: página pública de portfólio sobre tracing do RAG, avaliação semântica, regressão sintética 4B.4 e o diagnóstico do caso `aur-05`; usa somente dados históricos selecionados, sem conexão do navegador ao Langfuse
 
 ## Documentação
 
