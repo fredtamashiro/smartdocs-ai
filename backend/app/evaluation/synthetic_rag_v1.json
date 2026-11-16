@@ -1,0 +1,40 @@
+{
+  "version": "1.0.0",
+  "name": "smartdocs-synthetic-rag",
+  "documents": [
+    {"ref": "estacao_aurora", "title": "Manual sintético da Estação Aurora", "chunks": [
+      {"page": 1, "text": "A Estação Aurora é um equipamento fictício para monitorar jardins. Para ligar, pressione INICIAR por 3 segundos. O LED azul indica que a estação está pronta."},
+      {"page": 2, "text": "A Estação Aurora usa bateria de 12 Ah e tem autonomia nominal de 8 horas. A recarga é feita por USB-C e dura aproximadamente 4 horas."},
+      {"page": 3, "text": "A Estação Aurora mede temperatura a cada 5 minutos e umidade a cada 10 minutos. Os dados ficam armazenados por 30 dias."},
+      {"page": 4, "text": "O alerta amarelo ocorre quando a temperatura passa de 35 graus Celsius. O alerta vermelho ocorre quando a umidade fica abaixo de 20%. Para silenciar um alerta, pressione PAUSA uma vez; isso não interrompe a coleta."},
+      {"page": 5, "text": "Limpe o sensor da Estação Aurora com pano seco a cada 14 dias. Não use água. A garantia fictícia é de 18 meses."}
+    ]},
+    {"ref": "armario_boreal", "title": "Guia sintético do Armário Boreal", "chunks": [
+      {"page": 1, "text": "O Armário Boreal é um equipamento fictício com dois compartimentos. O compartimento A comporta 6 caixas; o compartimento B comporta 4 caixas."},
+      {"page": 2, "text": "Para liberar o compartimento A, use o cartão azul e pressione CONFIRMAR. Para liberar o compartimento B, use o cartão verde e pressione CONFIRMAR."},
+      {"page": 3, "text": "As entregas no Armário Boreal ocorrem terça-feira e quinta-feira às 9 horas. A retirada é permitida somente até as 18 horas."},
+      {"page": 4, "text": "Itens no compartimento A ficam disponíveis por 48 horas. No compartimento B, ficam por 24 horas. Após o prazo, os itens seguem para a triagem fictícia."},
+      {"page": 5, "text": "Em caso de falta de energia, a trava do Armário Boreal permanece fechada. O operador registra o incidente no livro L-7. O armário não oferece abertura remota."}
+    ]}
+  ],
+  "cases": [
+    {"id":"aur-01","document":"estacao_aurora","category":"factual","question":"Como ligar a Estação Aurora?","expected":{"answerable":true,"facts":[["3 segundos"]],"citation_required":false}},
+    {"id":"aur-02","document":"estacao_aurora","category":"factual","question":"Qual cor de LED indica que a Estação Aurora está pronta?","expected":{"answerable":true,"facts":[["azul"]],"citation_required":false}},
+    {"id":"aur-03","document":"estacao_aurora","category":"factual","question":"Qual é a autonomia nominal da estação?","expected":{"answerable":true,"facts":[["8 horas"]],"citation_required":false}},
+    {"id":"aur-04","document":"estacao_aurora","category":"distributed","question":"Com que frequência a estação mede temperatura e umidade?","expected":{"answerable":true,"facts":[["5 minutos"],["10 minutos"]],"citation_required":false}},
+    {"id":"aur-05","document":"estacao_aurora","category":"multi_chunk","question":"Como ligar a estação e por quanto tempo ela funciona com bateria?","expected":{"answerable":true,"facts":[["3 segundos"],["8 horas"]],"citation_required":false}},
+    {"id":"aur-06","document":"estacao_aurora","category":"absent","question":"Qual versão de Bluetooth a Estação Aurora utiliza?","expected":{"answerable":false,"facts":[],"citation_required":false}},
+    {"id":"aur-07","document":"estacao_aurora","category":"ambiguous","question":"Qual é o intervalo da Estação Aurora?","expected":{"answerable":false,"facts":[],"citation_required":false}},
+    {"id":"aur-08","document":"estacao_aurora","category":"citation","question":"Quando limpar o sensor e o que deve ser evitado? Cite a página.","expected":{"answerable":true,"facts":[["14 dias"],["água"]],"citation_required":true}},
+    {"id":"aur-09","document":"estacao_aurora","category":"multi_chunk","question":"Por quanto tempo os dados são guardados e qual é a duração da garantia?","expected":{"answerable":true,"facts":[["30 dias"],["18 meses"]],"citation_required":false}},
+    {"id":"bor-01","document":"armario_boreal","category":"factual","question":"Quantas caixas cabem no compartimento A?","expected":{"answerable":true,"facts":[["6 caixas"]],"citation_required":false}},
+    {"id":"bor-02","document":"armario_boreal","category":"factual","question":"Qual cartão libera o compartimento B?","expected":{"answerable":true,"facts":[["verde"]],"citation_required":false}},
+    {"id":"bor-03","document":"armario_boreal","category":"distributed","question":"Em quais dias e horário ocorrem as entregas?","expected":{"answerable":true,"facts":[["terça"],["quinta"],["9 horas","9h"]],"citation_required":false}},
+    {"id":"bor-04","document":"armario_boreal","category":"multi_chunk","question":"Qual cartão abre A e por quanto tempo o item fica disponível nesse compartimento?","expected":{"answerable":true,"facts":[["azul"],["48 horas"]],"citation_required":false}},
+    {"id":"bor-05","document":"armario_boreal","category":"absent","question":"Qual é o endereço de e-mail do suporte do Armário Boreal?","expected":{"answerable":false,"facts":[],"citation_required":false}},
+    {"id":"bor-06","document":"armario_boreal","category":"ambiguous","question":"Qual é o prazo do Armário Boreal?","expected":{"answerable":false,"facts":[],"citation_required":false}},
+    {"id":"bor-07","document":"armario_boreal","category":"citation","question":"O que acontece com a trava na falta de energia? Cite a página.","expected":{"answerable":true,"facts":[["fechada"]],"citation_required":true}},
+    {"id":"bor-08","document":"armario_boreal","category":"citation","question":"Onde se registra um incidente de falta de energia? Cite a página.","expected":{"answerable":true,"facts":[["L-7"]],"citation_required":true}},
+    {"id":"bor-09","document":"armario_boreal","category":"multi_chunk","question":"Quantas caixas cabem em B e até que horas é permitida a retirada?","expected":{"answerable":true,"facts":[["4 caixas"],["18 horas","18h"]],"citation_required":false}}
+  ]
+}

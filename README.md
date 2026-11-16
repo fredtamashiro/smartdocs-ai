@@ -50,6 +50,15 @@ Documentação visual:
 
 ## Documentação
 
+- [Avaliação sintética do RAG](docs/evaluation.md): 18 casos versionados, juízes semânticos, captura local controlada do contexto real, calibração auditável e revisão humana; publicação explícita no Langfuse.
+- [Diagnóstico RAG 4A](docs/rag-diagnosis-4a.md): análise de `aur-05`, `aur-07` e `bor-06`, causas prováveis e plano de validação da 4B.
+- [Diagnóstico da recuperação 4B.1](docs/rag-retrieval-diagnosis-4b1.md): rastreamento dirigido de `aur-05` e `bor-06`, perda de chunks e parâmetros de seleção.
+- [Correção da deduplicação 4B.2](docs/rag-dedup-evaluation-4b2.md): índice `0` preservado, contexto verificado e avaliação dirigida com controles.
+- [Auditoria da avaliação 4B.3](docs/evaluation-audit-4b3.md): divergências de abstenção auditadas offline, decisões originais preservadas e revisão humana.
+- [Regressão completa 4B.4](docs/rag-regression-4b4.md): comparação dos 18 casos com a baseline 3D, contextos reais, scores, latência e tokens.
+- [Revisão humana 4C](docs/human-review-4c.md): evidências e opções de política para `aur-07`, `bor-05` e `bor-06`, com formulário de decisões em branco.
+- [Observabilidade Langfuse](docs/langfuse.md): trace opcional do fluxo de perguntas, busca vetorial e generations, sem enviar conteúdo de perguntas, chunks ou respostas.
+
 - [docs/architecture.md](C:/IA/auto-manual-ai/docs/architecture.md:1)
 - [docs/deploy-railway.md](C:/IA/auto-manual-ai/docs/deploy-railway.md:1)
 - [docs/railway-services.md](C:/IA/auto-manual-ai/docs/railway-services.md:1)

@@ -1,4 +1,6 @@
 import logging
+from time import perf_counter
+from uuid import uuid4
 
 from fastapi import APIRouter, HTTPException, Request
 
@@ -13,6 +15,7 @@ from app.services.chat_answer_cache_service import (
     save_cached_answer,
 )
 from app.services.document_registry_service import find_registered_document_by_id
+from app.services.langfuse_observability import finish_query, observe_query
 from app.services.question_guard_service import validate_question_safety
 from app.services.query_strategy_service import extract_document_search_terms
 from app.services.rate_limit_service import check_chat_rate_limit
@@ -102,6 +105,18 @@ def ask_question(
     request: Request,
     payload: ChatRequest,
 ):
+    started_at = perf_counter()
+    with observe_query(str(uuid4()), len(payload.question.strip()), request.app.version) as observation:
+        try:
+            response = _ask_question_impl(request, payload)
+        except BaseException:
+            finish_query(observation, started_at, "failure")
+            raise
+        finish_query(observation, started_at, "success", len(response.answer))
+        return response
+
+
+def _ask_question_impl(request: Request, payload: ChatRequest):
     """Responde uma pergunta usando o documento registrado pelo document_id."""
     try:
         settings = get_settings()

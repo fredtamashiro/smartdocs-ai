@@ -45,6 +45,7 @@ backend/app/storage/vectorstore/
 .turbo/
 .coverage
 htmlcov/
+backend/app/evaluation/reports/
 
 # Docker
 *.pid

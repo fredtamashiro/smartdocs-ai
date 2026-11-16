@@ -1,0 +1,1900 @@
+{
+  "review_schema_version": "1.0.0",
+  "dataset": "smartdocs-synthetic-rag-1.0.0-491e84f6",
+  "dataset_version": "1.0.0",
+  "dataset_sha256": "491e84f6673b5514361cd4211d1f59a114aed8d44ff321b243bc368ed521e2c9",
+  "run_name": "baseline-v1",
+  "rag_model": "gpt-5-mini",
+  "judge_model": "gpt-4.1-mini",
+  "original_rubrics": {
+    "answer_correctness": "1.0.3",
+    "faithfulness": "1.0.3",
+    "abstention_correctness": "1.0.3"
+  },
+  "calibrated_rubrics": {
+    "answer_correctness": "1.0.3",
+    "faithfulness": "1.1.0",
+    "abstention_correctness": "1.1.0"
+  },
+  "created_at": "2026-11-16T19:25:19.407344+00:00",
+  "cases": [
+    {
+      "case_id": "aur-01",
+      "question": "Como ligar a Estação Aurora?",
+      "answer": "Para ligar a Estação Aurora, pressione INICIAR por 3 segundos (p. 1).\n\nPassos para ligar:\n1. Pressione o botão INICIAR e mantenha pressionado por 3 segundos (p. 1).\n\nIndicador de estado:\n- O LED azul indica que a estação está pronta (p. 1).\n\nLimitação:\n- O contexto não fornece informações sobre como desligar a estação, procedimentos de configuração adicionais ou solução de problemas (p. 1).",
+      "case_analysis": {
+        "kind": "answerable",
+        "multi_interpretation_candidate": null,
+        "interpretations_for_review": [],
+        "evidence": {
+          "origin": "synthetic_pages_reconstructed",
+          "completeness": "incomplete",
+          "chunks_recorded": 1,
+          "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM."
+        },
+        "partial_answer_candidate": false
+      },
+      "automatic": {
+        "answer_correctness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": null,
+            "reason": "A resposta está correta e completa segundo o documento de referência. Indica que para ligar a Estação Aurora deve-se pressionar o botão INICIAR por 3 segundos, e que o LED azul indica que a estação está pronta, conforme o texto da página 1. Não há informações adicionais necessárias para responder à pergunta."
+          },
+          "calibrated": {
+            "status": "scored",
+            "score": 1.0,
+            "reason": "A resposta está correta e completa segundo o documento de referência. Indica que para ligar a Estação Aurora deve-se pressionar o botão INICIAR por 3 segundos, e que o LED azul indica que a estação está pronta, conforme o texto da página 1. Não há informações adicionais necessárias para responder à pergunta.",
+            "rubric_version": "1.0.3",
+            "deterministic_correction": null
+          }
+        },
+        "faithfulness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": null,
+            "model_reason": "Foi preciso na resposta além de falar sobre como ligar a estação, também mencionou o LED azul como indicador de que a estação está pronta, o que é suportado pela evidência recuperada."
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": null,
+            "reason": "A resposta afirma que para ligar a Estação Aurora deve-se pressionar o botão INICIAR por 3 segundos e que o LED azul indica que a estação está pronta, o que está totalmente suportado pela evidência recuperada."
+          },
+          "calibrated": {
+            "status": "not_evaluable",
+            "score": null,
+            "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM. Score histórico preservado em semantic.faithfulness.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": {
+              "rule": "insufficient_generation_evidence",
+              "previous_score": 1.0
+            }
+          }
+        },
+        "abstention_correctness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": "answered",
+            "model_reason": "A resposta fornece claramente o procedimento para ligar a Estação Aurora, indicando que é necessário pressionar o botão INICIAR por 3 segundos, conforme evidenciado no texto recuperado. Portanto, a questão foi respondida de forma completa e correta."
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": "answered",
+            "reason": "A resposta fornece claramente o procedimento para ligar a Estação Aurora, indicando que é necessário pressionar o botão INICIAR por 3 segundos, conforme evidenciado no texto recuperado. Portanto, a questão foi respondida de forma completa e correta."
+          },
+          "calibrated": {
+            "status": "scored",
+            "score": 1.0,
+            "reason": "A resposta fornece claramente o procedimento para ligar a Estação Aurora, indicando que é necessário pressionar o botão INICIAR por 3 segundos, conforme evidenciado no texto recuperado. Portanto, a questão foi respondida de forma completa e correta.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": null
+          }
+        }
+      },
+      "human": {
+        "answer_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "observations": "Foi preciso na informação informando como ligar a estação e o LED azul como indicador de que a estação está pronta."
+        },
+        "faithfulness": {
+          "status": "not_evaluable",
+          "score": null,
+          "observations": "Não foi possível verificar o contexto exato utilizado pelo LLM durante a geração da resposta."
+        },
+        "abstention_correctness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        }
+      },
+      "observations": ""
+    },
+    {
+      "case_id": "aur-02",
+      "question": "Qual cor de LED indica que a Estação Aurora está pronta?",
+      "answer": "O LED azul indica que a Estação Aurora está pronta. (p. 1)",
+      "case_analysis": {
+        "kind": "answerable",
+        "multi_interpretation_candidate": null,
+        "interpretations_for_review": [],
+        "evidence": {
+          "origin": "synthetic_pages_reconstructed",
+          "completeness": "incomplete",
+          "chunks_recorded": 1,
+          "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM."
+        },
+        "partial_answer_candidate": false
+      },
+      "automatic": {
+        "answer_correctness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": null,
+            "reason": "A resposta está correta e completa, indicando que o LED azul é o que mostra que a Estação Aurora está pronta, conforme o documento de referência na página 1."
+          },
+          "calibrated": {
+            "status": "scored",
+            "score": 1.0,
+            "reason": "A resposta está correta e completa, indicando que o LED azul é o que mostra que a Estação Aurora está pronta, conforme o documento de referência na página 1.",
+            "rubric_version": "1.0.3",
+            "deterministic_correction": null
+          }
+        },
+        "faithfulness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": null,
+            "reason": "A evidência recuperada confirma que o LED azul indica que a Estação Aurora está pronta, correspondendo exatamente à afirmação da resposta."
+          },
+          "calibrated": {
+            "status": "not_evaluable",
+            "score": null,
+            "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM. Score histórico preservado em semantic.faithfulness.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": {
+              "rule": "insufficient_generation_evidence",
+              "previous_score": 1.0
+            }
+          }
+        },
+        "abstention_correctness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": "answered",
+            "model_reason": "A resposta indica claramente que o LED azul indica que a Estação Aurora está pronta, conforme evidenciado no texto recuperado da página 1."
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": "answered",
+            "reason": "A resposta indica claramente que o LED azul indica que a Estação Aurora está pronta, conforme evidenciado no texto recuperado da página 1."
+          },
+          "calibrated": {
+            "status": "scored",
+            "score": 1.0,
+            "reason": "A resposta indica claramente que o LED azul indica que a Estação Aurora está pronta, conforme evidenciado no texto recuperado da página 1.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": null
+          }
+        }
+      },
+      "human": {
+        "answer_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "observations": "A resposta é correta e aborda a questão de forma clara."
+        },
+        "faithfulness": {
+          "status": "not_evaluable",
+          "score": null,
+          "observations": "Não foi possível verificar o contexto exato utilizado pelo LLM durante a geração da resposta."
+        },
+        "abstention_correctness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        }
+      },
+      "observations": ""
+    },
+    {
+      "case_id": "aur-03",
+      "question": "Qual é a autonomia nominal da estação?",
+      "answer": "A autonomia nominal da Estação Aurora é de 8 horas (p. 2).",
+      "case_analysis": {
+        "kind": "answerable",
+        "multi_interpretation_candidate": null,
+        "interpretations_for_review": [],
+        "evidence": {
+          "origin": "synthetic_pages_reconstructed",
+          "completeness": "incomplete",
+          "chunks_recorded": 1,
+          "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM."
+        },
+        "partial_answer_candidate": false
+      },
+      "automatic": {
+        "answer_correctness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": null,
+            "reason": "A resposta indica corretamente que a autonomia nominal da Estação Aurora é de 8 horas, conforme consta na página 2 do documento de referência."
+          },
+          "calibrated": {
+            "status": "scored",
+            "score": 1.0,
+            "reason": "A resposta indica corretamente que a autonomia nominal da Estação Aurora é de 8 horas, conforme consta na página 2 do documento de referência.",
+            "rubric_version": "1.0.3",
+            "deterministic_correction": null
+          }
+        },
+        "faithfulness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": null,
+            "reason": "A evidência recuperada confirma que a autonomia nominal da Estação Aurora é de 8 horas, conforme afirmado na resposta."
+          },
+          "calibrated": {
+            "status": "not_evaluable",
+            "score": null,
+            "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM. Score histórico preservado em semantic.faithfulness.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": {
+              "rule": "insufficient_generation_evidence",
+              "previous_score": 1.0
+            }
+          }
+        },
+        "abstention_correctness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": "answered",
+            "model_reason": "A resposta fornece diretamente a autonomia nominal da estação, que é de 8 horas, conforme evidenciado no texto recuperado da página 2."
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": "answered",
+            "reason": "A resposta fornece diretamente a autonomia nominal da estação, que é de 8 horas, conforme evidenciado no texto recuperado da página 2."
+          },
+          "calibrated": {
+            "status": "scored",
+            "score": 1.0,
+            "reason": "A resposta fornece diretamente a autonomia nominal da estação, que é de 8 horas, conforme evidenciado no texto recuperado da página 2.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": null
+          }
+        }
+      },
+      "human": {
+        "answer_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "observations": "Respondeu corretemante a pergunta"
+        },
+        "faithfulness": {
+          "status": "not_evaluable",
+          "score": null,
+          "observations": "Não foi possível verificar o contexto exato utilizado pelo LLM durante a geração da resposta."
+        },
+        "abstention_correctness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        }
+      },
+      "observations": ""
+    },
+    {
+      "case_id": "aur-04",
+      "question": "Com que frequência a estação mede temperatura e umidade?",
+      "answer": "Temperatura: a cada 5 minutos (p. 3)\n\nUmidade: a cada 10 minutos (p. 3)",
+      "case_analysis": {
+        "kind": "answerable",
+        "multi_interpretation_candidate": null,
+        "interpretations_for_review": [],
+        "evidence": {
+          "origin": "synthetic_pages_reconstructed",
+          "completeness": "incomplete",
+          "chunks_recorded": 1,
+          "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM."
+        },
+        "partial_answer_candidate": false
+      },
+      "automatic": {
+        "answer_correctness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": null,
+            "reason": "A resposta está correta e completa, indicando que a temperatura é medida a cada 5 minutos e a umidade a cada 10 minutos, conforme o documento de referência na página 3."
+          },
+          "calibrated": {
+            "status": "scored",
+            "score": 1.0,
+            "reason": "A resposta está correta e completa, indicando que a temperatura é medida a cada 5 minutos e a umidade a cada 10 minutos, conforme o documento de referência na página 3.",
+            "rubric_version": "1.0.3",
+            "deterministic_correction": null
+          }
+        },
+        "faithfulness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": null,
+            "reason": "A evidência recuperada confirma que a estação mede temperatura a cada 5 minutos e umidade a cada 10 minutos, exatamente como afirmado na resposta."
+          },
+          "calibrated": {
+            "status": "not_evaluable",
+            "score": null,
+            "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM. Score histórico preservado em semantic.faithfulness.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": {
+              "rule": "insufficient_generation_evidence",
+              "previous_score": 1.0
+            }
+          }
+        },
+        "abstention_correctness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": "answered",
+            "model_reason": "A resposta fornece claramente a frequência de medição da temperatura (a cada 5 minutos) e da umidade (a cada 10 minutos), conforme evidenciado no texto da página 3."
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": "answered",
+            "reason": "A resposta fornece claramente a frequência de medição da temperatura (a cada 5 minutos) e da umidade (a cada 10 minutos), conforme evidenciado no texto da página 3."
+          },
+          "calibrated": {
+            "status": "scored",
+            "score": 1.0,
+            "reason": "A resposta fornece claramente a frequência de medição da temperatura (a cada 5 minutos) e da umidade (a cada 10 minutos), conforme evidenciado no texto da página 3.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": null
+          }
+        }
+      },
+      "human": {
+        "answer_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "observations": "Respondeu corretemante a pergunta"
+        },
+        "faithfulness": {
+          "status": "not_evaluable",
+          "score": null,
+          "observations": "Não foi possível verificar o contexto exato utilizado pelo LLM durante a geração da resposta."
+        },
+        "abstention_correctness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        }
+      },
+      "observations": ""
+    },
+    {
+      "case_id": "aur-05",
+      "question": "Como ligar a estação e por quanto tempo ela funciona com bateria?",
+      "answer": "Como ligar a estação\n\n1. O contexto não informa o procedimento para ligar a estação. (p. 2)\n\nPor quanto tempo ela funciona com bateria\n\n- Capacidade da bateria: 12 Ah. (p. 2)  \n- Autonomia nominal: 8 horas. (p. 2)  \n- Recarrega por USB-C; tempo de recarga aproximado: 4 horas. (p. 2)",
+      "case_analysis": {
+        "kind": "answerable",
+        "multi_interpretation_candidate": null,
+        "interpretations_for_review": [],
+        "evidence": {
+          "origin": "synthetic_pages_reconstructed",
+          "completeness": "incomplete",
+          "chunks_recorded": 1,
+          "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM."
+        },
+        "partial_answer_candidate": true
+      },
+      "automatic": {
+        "answer_correctness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 0.5,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 0.5,
+            "response_behavior": null,
+            "reason": "A resposta não informa corretamente como ligar a estação, omitindo o procedimento de pressionar INICIAR por 3 segundos, que está no documento. A informação sobre a autonomia da bateria (8 horas) está correta e completa."
+          },
+          "calibrated": {
+            "status": "scored",
+            "score": 0.5,
+            "reason": "A resposta não informa corretamente como ligar a estação, omitindo o procedimento de pressionar INICIAR por 3 segundos, que está no documento. A informação sobre a autonomia da bateria (8 horas) está correta e completa.",
+            "rubric_version": "1.0.3",
+            "deterministic_correction": null
+          }
+        },
+        "faithfulness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": null,
+            "reason": "A resposta afirma que a estação tem bateria de 12 Ah, autonomia nominal de 8 horas e recarga por USB-C em aproximadamente 4 horas, o que está totalmente suportado pela evidência recuperada da página 2."
+          },
+          "calibrated": {
+            "status": "not_evaluable",
+            "score": null,
+            "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM. Score histórico preservado em semantic.faithfulness.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": {
+              "rule": "insufficient_generation_evidence",
+              "previous_score": 1.0
+            }
+          }
+        },
+        "abstention_correctness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 0.0,
+            "model_behavior": "answered",
+            "model_reason": "A resposta não informa como ligar a estação, apenas menciona que o contexto não fornece esse procedimento, embora a pergunta seja respondível. A autonomia da bateria está correta, mas a parte sobre ligar a estação está ausente, o que torna a resposta incompleta."
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": "answered",
+            "reason": "A resposta não informa como ligar a estação, apenas menciona que o contexto não fornece esse procedimento, embora a pergunta seja respondível. A autonomia da bateria está correta, mas a parte sobre ligar a estação está ausente, o que torna a resposta incompleta. Rubrica aplicada: Score ajustado para 1.0 pela escala da rubrica conforme o comportamento classificado."
+          },
+          "calibrated": {
+            "status": "scored",
+            "score": 1.0,
+            "reason": "A resposta não informa como ligar a estação, apenas menciona que o contexto não fornece esse procedimento, embora a pergunta seja respondível. A autonomia da bateria está correta, mas a parte sobre ligar a estação está ausente, o que torna a resposta incompleta. Rubrica aplicada: Score ajustado para 1.0 pela escala da rubrica conforme o comportamento classificado.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": {
+              "model_score": 0.0,
+              "previous_score": 1.0
+            }
+          }
+        }
+      },
+      "human": {
+        "answer_correctness": {
+          "status": "scored",
+          "score": 0.0,
+          "observations": "Em outra pergunta foi informado que para ligar a estação é necessário pressionar o botão INICIAR por 3 segundos, mas a resposta não menciona isso. A parte sobre a autonomia da bateria está correta."
+        },
+        "faithfulness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        },
+        "abstention_correctness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        }
+      },
+      "observations": ""
+    },
+    {
+      "case_id": "aur-06",
+      "question": "Qual versão de Bluetooth a Estação Aurora utiliza?",
+      "answer": "Não há informação sobre a versão de Bluetooth da Estação Aurora nos documentos fornecidos (p. 2 e 3).",
+      "case_analysis": {
+        "kind": "missing_information",
+        "multi_interpretation_candidate": null,
+        "interpretations_for_review": [],
+        "evidence": {
+          "origin": "synthetic_pages_reconstructed",
+          "completeness": "incomplete",
+          "chunks_recorded": 3,
+          "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM."
+        },
+        "partial_answer_candidate": false
+      },
+      "automatic": {
+        "answer_correctness": {
+          "original_judge": {
+            "status": "not_evaluable",
+            "model_score": null,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "not_evaluable",
+            "score": null,
+            "response_behavior": null,
+            "reason": "Pergunta sem resposta de referência; avalie a abstenção."
+          },
+          "calibrated": {
+            "status": "not_evaluable",
+            "score": null,
+            "reason": "Pergunta sem resposta de referência; avalie a abstenção.",
+            "rubric_version": "1.0.3",
+            "deterministic_correction": null
+          }
+        },
+        "faithfulness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": null,
+            "reason": "A resposta afirma que não há informação sobre a versão de Bluetooth da Estação Aurora nos documentos fornecidos, o que é suportado pela evidência recuperada que não menciona qualquer versão de Bluetooth."
+          },
+          "calibrated": {
+            "status": "not_evaluable",
+            "score": null,
+            "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM. Score histórico preservado em semantic.faithfulness.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": {
+              "rule": "insufficient_generation_evidence",
+              "previous_score": 1.0
+            }
+          }
+        },
+        "abstention_correctness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": "answered",
+            "model_reason": "A resposta indica claramente que não há informação sobre a versão de Bluetooth da Estação Aurora nos documentos fornecidos, o que está de acordo com a evidência apresentada. Portanto, a resposta é correta e completa para a pergunta não respondível."
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": "abstained",
+            "reason": "A resposta indica claramente que não há informação sobre a versão de Bluetooth da Estação Aurora nos documentos fornecidos, o que está de acordo com a evidência apresentada. Portanto, a resposta é correta e completa para a pergunta não respondível. Rubrica aplicada: Recusa explícita reconhecida pela métrica conservadora; comportamento final: abstenção."
+          },
+          "calibrated": {
+            "status": "scored",
+            "score": 1.0,
+            "reason": "A resposta indica claramente que não há informação sobre a versão de Bluetooth da Estação Aurora nos documentos fornecidos, o que está de acordo com a evidência apresentada. Portanto, a resposta é correta e completa para a pergunta não respondível. Rubrica aplicada: Recusa explícita reconhecida pela métrica conservadora; comportamento final: abstenção.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": {
+              "rule": "clear_refusal_3b",
+              "model_behavior": "answered",
+              "final_behavior": "abstained",
+              "detector_confirmed": true
+            }
+          }
+        }
+      },
+      "human": {
+        "answer_correctness": {
+          "status": "scored",
+          "score": 0.0,
+          "observations": "Nao foi encontrada a informação sobre a versão de Bluetooth da Estação Aurora nos documentos fornecidos, portanto a resposta é correta e completa para a pergunta não respondível."
+        },
+        "faithfulness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        },
+        "abstention_correctness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        }
+      },
+      "observations": ""
+    },
+    {
+      "case_id": "aur-07",
+      "question": "Qual é o intervalo da Estação Aurora?",
+      "answer": "A Estação Aurora realiza as medidas nos seguintes intervalos:\n\n- Temperatura: a cada 5 minutos (p. 3)  \n- Umidade: a cada 10 minutos (p. 3)\n\nAlém disso, os dados ficam armazenados por 30 dias (p. 3).",
+      "case_analysis": {
+        "kind": "ambiguous",
+        "multi_interpretation_candidate": true,
+        "interpretations_for_review": [
+          "medição de temperatura",
+          "medição de umidade",
+          "retenção de dados"
+        ],
+        "lexical_interpretations_seen": 3,
+        "evidence": {
+          "origin": "synthetic_pages_reconstructed",
+          "completeness": "incomplete",
+          "chunks_recorded": 1,
+          "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM."
+        },
+        "partial_answer_candidate": false
+      },
+      "automatic": {
+        "answer_correctness": {
+          "original_judge": {
+            "status": "not_evaluable",
+            "model_score": null,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "not_evaluable",
+            "score": null,
+            "response_behavior": null,
+            "reason": "Pergunta sem resposta de referência; avalie a abstenção."
+          },
+          "calibrated": {
+            "status": "not_evaluable",
+            "score": null,
+            "reason": "Pergunta sem resposta de referência; avalie a abstenção.",
+            "rubric_version": "1.0.3",
+            "deterministic_correction": null
+          }
+        },
+        "faithfulness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": null,
+            "reason": "A resposta está totalmente suportada pela evidência recuperada, que confirma os intervalos de medição da Estação Aurora para temperatura (5 minutos) e umidade (10 minutos), bem como o armazenamento dos dados por 30 dias."
+          },
+          "calibrated": {
+            "status": "not_evaluable",
+            "score": null,
+            "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM. Score histórico preservado em semantic.faithfulness.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": {
+              "rule": "insufficient_generation_evidence",
+              "previous_score": 1.0
+            }
+          }
+        },
+        "abstention_correctness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 0.0,
+            "model_behavior": "answered",
+            "model_reason": "A pergunta é considerada não respondível (answerable: false) segundo o esperado, mas a resposta fornecida apresenta informações específicas sobre os intervalos de medição da Estação Aurora, o que caracteriza uma resposta fornecida para um fato que não deveria ser respondido. Portanto, a resposta é classificada como answered com score 0."
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 0.0,
+            "response_behavior": "answered",
+            "reason": "A pergunta é considerada não respondível (answerable: false) segundo o esperado, mas a resposta fornecida apresenta informações específicas sobre os intervalos de medição da Estação Aurora, o que caracteriza uma resposta fornecida para um fato que não deveria ser respondido. Portanto, a resposta é classificada como answered com score 0."
+          },
+          "calibrated": {
+            "status": "not_evaluable",
+            "score": null,
+            "reason": "Pergunta ambígua respondida: revisão humana deve distinguir resposta que cobre as interpretações relevantes de escolha de um único sentido. Indícios lexicais não determinam o score.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": {
+              "rule": "ambiguous_answer_requires_human_review",
+              "previous_score": 0.0
+            }
+          }
+        }
+      },
+      "human": {
+        "answer_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "observations": "Respondeu corretamente a pergunta alem de comentar que os dados ficam armazenados por 30 dias, o que é uma informação adicional relevante."
+        },
+        "faithfulness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        },
+        "abstention_correctness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        }
+      },
+      "observations": ""
+    },
+    {
+      "case_id": "aur-08",
+      "question": "Quando limpar o sensor e o que deve ser evitado? Cite a página.",
+      "answer": "Quando limpar\n1. Limpe o sensor com pano seco a cada 14 dias. (p. 5)\n\nO que deve ser evitado\n1. Não use água. (p. 5)",
+      "case_analysis": {
+        "kind": "answerable",
+        "multi_interpretation_candidate": null,
+        "interpretations_for_review": [],
+        "evidence": {
+          "origin": "synthetic_pages_reconstructed",
+          "completeness": "incomplete",
+          "chunks_recorded": 1,
+          "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM."
+        },
+        "partial_answer_candidate": false
+      },
+      "automatic": {
+        "answer_correctness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": null,
+            "reason": "A resposta está correta e completa: indica que o sensor deve ser limpo com pano seco a cada 14 dias e que não se deve usar água, conforme a página 5 do documento de referência."
+          },
+          "calibrated": {
+            "status": "scored",
+            "score": 1.0,
+            "reason": "A resposta está correta e completa: indica que o sensor deve ser limpo com pano seco a cada 14 dias e que não se deve usar água, conforme a página 5 do documento de referência.",
+            "rubric_version": "1.0.3",
+            "deterministic_correction": null
+          }
+        },
+        "faithfulness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": null,
+            "reason": "A resposta está totalmente suportada pela evidência recuperada da página 5, que indica limpar o sensor com pano seco a cada 14 dias e não usar água."
+          },
+          "calibrated": {
+            "status": "not_evaluable",
+            "score": null,
+            "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM. Score histórico preservado em semantic.faithfulness.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": {
+              "rule": "insufficient_generation_evidence",
+              "previous_score": 1.0
+            }
+          }
+        },
+        "abstention_correctness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": "answered",
+            "model_reason": "A resposta fornece claramente quando limpar o sensor (a cada 14 dias) e o que deve ser evitado (não usar água), citando a página 5 conforme solicitado."
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": "answered",
+            "reason": "A resposta fornece claramente quando limpar o sensor (a cada 14 dias) e o que deve ser evitado (não usar água), citando a página 5 conforme solicitado."
+          },
+          "calibrated": {
+            "status": "scored",
+            "score": 1.0,
+            "reason": "A resposta fornece claramente quando limpar o sensor (a cada 14 dias) e o que deve ser evitado (não usar água), citando a página 5 conforme solicitado.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": null
+          }
+        }
+      },
+      "human": {
+        "answer_correctness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        },
+        "faithfulness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        },
+        "abstention_correctness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        }
+      },
+      "observations": ""
+    },
+    {
+      "case_id": "aur-09",
+      "question": "Por quanto tempo os dados são guardados e qual é a duração da garantia?",
+      "answer": "Tempo de armazenamento dos dados\n- Os dados ficam armazenados por 30 dias (p. 3).\n\nDuração da garantia\n- A garantia fictícia é de 18 meses (p. 5).\n\nLimitação\n- O contexto não especifica condições adicionais, cobertura ou termos da garantia.",
+      "case_analysis": {
+        "kind": "answerable",
+        "multi_interpretation_candidate": null,
+        "interpretations_for_review": [],
+        "evidence": {
+          "origin": "synthetic_pages_reconstructed",
+          "completeness": "incomplete",
+          "chunks_recorded": 2,
+          "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM."
+        },
+        "partial_answer_candidate": false
+      },
+      "automatic": {
+        "answer_correctness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": null,
+            "reason": "A resposta está correta e completa. O tempo de armazenamento dos dados é de 30 dias, conforme indicado na página 3 do documento. A duração da garantia é de 18 meses, conforme indicado na página 5. A resposta também menciona corretamente que o contexto não especifica condições adicionais da garantia, o que está de acordo com o documento."
+          },
+          "calibrated": {
+            "status": "scored",
+            "score": 1.0,
+            "reason": "A resposta está correta e completa. O tempo de armazenamento dos dados é de 30 dias, conforme indicado na página 3 do documento. A duração da garantia é de 18 meses, conforme indicado na página 5. A resposta também menciona corretamente que o contexto não especifica condições adicionais da garantia, o que está de acordo com o documento.",
+            "rubric_version": "1.0.3",
+            "deterministic_correction": null
+          }
+        },
+        "faithfulness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": null,
+            "reason": "A resposta está totalmente suportada pelas evidências recuperadas: os dados são armazenados por 30 dias conforme indicado na página 3, e a garantia fictícia é de 18 meses conforme indicado na página 5. A limitação mencionada também está correta, pois o contexto não especifica condições adicionais da garantia."
+          },
+          "calibrated": {
+            "status": "not_evaluable",
+            "score": null,
+            "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM. Score histórico preservado em semantic.faithfulness.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": {
+              "rule": "insufficient_generation_evidence",
+              "previous_score": 1.0
+            }
+          }
+        },
+        "abstention_correctness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": "answered",
+            "model_reason": "A resposta fornece claramente o tempo de armazenamento dos dados (30 dias) e a duração da garantia (18 meses), conforme evidenciado nas páginas 3 e 5 do contexto. Portanto, a questão foi respondida de forma completa e correta."
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": "answered",
+            "reason": "A resposta fornece claramente o tempo de armazenamento dos dados (30 dias) e a duração da garantia (18 meses), conforme evidenciado nas páginas 3 e 5 do contexto. Portanto, a questão foi respondida de forma completa e correta."
+          },
+          "calibrated": {
+            "status": "scored",
+            "score": 1.0,
+            "reason": "A resposta fornece claramente o tempo de armazenamento dos dados (30 dias) e a duração da garantia (18 meses), conforme evidenciado nas páginas 3 e 5 do contexto. Portanto, a questão foi respondida de forma completa e correta.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": null
+          }
+        }
+      },
+      "human": {
+        "answer_correctness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        },
+        "faithfulness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        },
+        "abstention_correctness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        }
+      },
+      "observations": ""
+    },
+    {
+      "case_id": "bor-01",
+      "question": "Quantas caixas cabem no compartimento A?",
+      "answer": "O compartimento A comporta 6 caixas (p. 1).",
+      "case_analysis": {
+        "kind": "answerable",
+        "multi_interpretation_candidate": null,
+        "interpretations_for_review": [],
+        "evidence": {
+          "origin": "synthetic_pages_reconstructed",
+          "completeness": "incomplete",
+          "chunks_recorded": 1,
+          "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM."
+        },
+        "partial_answer_candidate": false
+      },
+      "automatic": {
+        "answer_correctness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": null,
+            "reason": "A resposta indica corretamente que o compartimento A comporta 6 caixas, conforme o documento de referência na página 1."
+          },
+          "calibrated": {
+            "status": "scored",
+            "score": 1.0,
+            "reason": "A resposta indica corretamente que o compartimento A comporta 6 caixas, conforme o documento de referência na página 1.",
+            "rubric_version": "1.0.3",
+            "deterministic_correction": null
+          }
+        },
+        "faithfulness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": null,
+            "reason": "A evidência recuperada confirma que o compartimento A comporta 6 caixas, exatamente como afirmado na resposta."
+          },
+          "calibrated": {
+            "status": "not_evaluable",
+            "score": null,
+            "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM. Score histórico preservado em semantic.faithfulness.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": {
+              "rule": "insufficient_generation_evidence",
+              "previous_score": 1.0
+            }
+          }
+        },
+        "abstention_correctness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": "answered",
+            "model_reason": "A resposta forneceu diretamente a informação solicitada, indicando que o compartimento A comporta 6 caixas, conforme evidenciado no texto da página 1."
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": "answered",
+            "reason": "A resposta forneceu diretamente a informação solicitada, indicando que o compartimento A comporta 6 caixas, conforme evidenciado no texto da página 1."
+          },
+          "calibrated": {
+            "status": "scored",
+            "score": 1.0,
+            "reason": "A resposta forneceu diretamente a informação solicitada, indicando que o compartimento A comporta 6 caixas, conforme evidenciado no texto da página 1.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": null
+          }
+        }
+      },
+      "human": {
+        "answer_correctness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        },
+        "faithfulness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        },
+        "abstention_correctness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        }
+      },
+      "observations": ""
+    },
+    {
+      "case_id": "bor-02",
+      "question": "Qual cartão libera o compartimento B?",
+      "answer": "O cartão verde libera o compartimento B (p. 2).\n\nProcedimento:\n1. Use o cartão verde.\n2. Pressione CONFIRMAR (p. 2).",
+      "case_analysis": {
+        "kind": "answerable",
+        "multi_interpretation_candidate": null,
+        "interpretations_for_review": [],
+        "evidence": {
+          "origin": "synthetic_pages_reconstructed",
+          "completeness": "incomplete",
+          "chunks_recorded": 1,
+          "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM."
+        },
+        "partial_answer_candidate": false
+      },
+      "automatic": {
+        "answer_correctness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": null,
+            "reason": "A resposta indica corretamente que o cartão verde libera o compartimento B, conforme o documento de referência na página 2. O procedimento adicional de pressionar CONFIRMAR também está correto e presente no documento."
+          },
+          "calibrated": {
+            "status": "scored",
+            "score": 1.0,
+            "reason": "A resposta indica corretamente que o cartão verde libera o compartimento B, conforme o documento de referência na página 2. O procedimento adicional de pressionar CONFIRMAR também está correto e presente no documento.",
+            "rubric_version": "1.0.3",
+            "deterministic_correction": null
+          }
+        },
+        "faithfulness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": null,
+            "reason": "A evidência recuperada confirma que o cartão verde libera o compartimento B, conforme afirmado na resposta."
+          },
+          "calibrated": {
+            "status": "not_evaluable",
+            "score": null,
+            "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM. Score histórico preservado em semantic.faithfulness.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": {
+              "rule": "insufficient_generation_evidence",
+              "previous_score": 1.0
+            }
+          }
+        },
+        "abstention_correctness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": "answered",
+            "model_reason": "A resposta indica claramente que o cartão verde libera o compartimento B, conforme evidenciado no texto recuperado da página 2."
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": "answered",
+            "reason": "A resposta indica claramente que o cartão verde libera o compartimento B, conforme evidenciado no texto recuperado da página 2."
+          },
+          "calibrated": {
+            "status": "scored",
+            "score": 1.0,
+            "reason": "A resposta indica claramente que o cartão verde libera o compartimento B, conforme evidenciado no texto recuperado da página 2.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": null
+          }
+        }
+      },
+      "human": {
+        "answer_correctness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        },
+        "faithfulness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        },
+        "abstention_correctness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        }
+      },
+      "observations": ""
+    },
+    {
+      "case_id": "bor-03",
+      "question": "Em quais dias e horário ocorrem as entregas?",
+      "answer": "As entregas ocorrem terça-feira e quinta-feira às 9 horas (p. 3).",
+      "case_analysis": {
+        "kind": "answerable",
+        "multi_interpretation_candidate": null,
+        "interpretations_for_review": [],
+        "evidence": {
+          "origin": "synthetic_pages_reconstructed",
+          "completeness": "incomplete",
+          "chunks_recorded": 1,
+          "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM."
+        },
+        "partial_answer_candidate": false
+      },
+      "automatic": {
+        "answer_correctness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": null,
+            "reason": "A resposta está correta e completa, indicando que as entregas ocorrem terça-feira e quinta-feira às 9 horas, conforme o documento de referência na página 3."
+          },
+          "calibrated": {
+            "status": "scored",
+            "score": 1.0,
+            "reason": "A resposta está correta e completa, indicando que as entregas ocorrem terça-feira e quinta-feira às 9 horas, conforme o documento de referência na página 3.",
+            "rubric_version": "1.0.3",
+            "deterministic_correction": null
+          }
+        },
+        "faithfulness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": null,
+            "reason": "A resposta está totalmente suportada pela evidência recuperada, que confirma que as entregas ocorrem terça-feira e quinta-feira às 9 horas."
+          },
+          "calibrated": {
+            "status": "not_evaluable",
+            "score": null,
+            "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM. Score histórico preservado em semantic.faithfulness.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": {
+              "rule": "insufficient_generation_evidence",
+              "previous_score": 1.0
+            }
+          }
+        },
+        "abstention_correctness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": "answered",
+            "model_reason": "A resposta fornece claramente os dias (terça-feira e quinta-feira) e o horário (às 9 horas) das entregas, conforme evidenciado no texto da página 3."
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": "answered",
+            "reason": "A resposta fornece claramente os dias (terça-feira e quinta-feira) e o horário (às 9 horas) das entregas, conforme evidenciado no texto da página 3."
+          },
+          "calibrated": {
+            "status": "scored",
+            "score": 1.0,
+            "reason": "A resposta fornece claramente os dias (terça-feira e quinta-feira) e o horário (às 9 horas) das entregas, conforme evidenciado no texto da página 3.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": null
+          }
+        }
+      },
+      "human": {
+        "answer_correctness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        },
+        "faithfulness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        },
+        "abstention_correctness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        }
+      },
+      "observations": ""
+    },
+    {
+      "case_id": "bor-04",
+      "question": "Qual cartão abre A e por quanto tempo o item fica disponível nesse compartimento?",
+      "answer": "Cartão que abre o compartimento A\n- Cartão azul — pressione CONFIRMAR (p. 2).\n\nTempo de disponibilidade\n- Itens no compartimento A ficam disponíveis por 48 horas (p. 4).",
+      "case_analysis": {
+        "kind": "answerable",
+        "multi_interpretation_candidate": null,
+        "interpretations_for_review": [],
+        "evidence": {
+          "origin": "synthetic_pages_reconstructed",
+          "completeness": "incomplete",
+          "chunks_recorded": 2,
+          "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM."
+        },
+        "partial_answer_candidate": false
+      },
+      "automatic": {
+        "answer_correctness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": null,
+            "reason": "A resposta está correta e completa: o cartão que abre o compartimento A é o cartão azul, e o item fica disponível nesse compartimento por 48 horas, conforme indicado nas páginas 2 e 4 do documento de referência."
+          },
+          "calibrated": {
+            "status": "scored",
+            "score": 1.0,
+            "reason": "A resposta está correta e completa: o cartão que abre o compartimento A é o cartão azul, e o item fica disponível nesse compartimento por 48 horas, conforme indicado nas páginas 2 e 4 do documento de referência.",
+            "rubric_version": "1.0.3",
+            "deterministic_correction": null
+          }
+        },
+        "faithfulness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": null,
+            "reason": "A resposta afirma corretamente que o cartão azul abre o compartimento A e que os itens ficam disponíveis por 48 horas, conforme evidenciado nas páginas 2 e 4 do material recuperado."
+          },
+          "calibrated": {
+            "status": "not_evaluable",
+            "score": null,
+            "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM. Score histórico preservado em semantic.faithfulness.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": {
+              "rule": "insufficient_generation_evidence",
+              "previous_score": 1.0
+            }
+          }
+        },
+        "abstention_correctness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": "answered",
+            "model_reason": "A resposta fornece claramente que o cartão azul abre o compartimento A e que os itens ficam disponíveis por 48 horas, conforme evidenciado nas páginas 2 e 4."
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": "answered",
+            "reason": "A resposta fornece claramente que o cartão azul abre o compartimento A e que os itens ficam disponíveis por 48 horas, conforme evidenciado nas páginas 2 e 4."
+          },
+          "calibrated": {
+            "status": "scored",
+            "score": 1.0,
+            "reason": "A resposta fornece claramente que o cartão azul abre o compartimento A e que os itens ficam disponíveis por 48 horas, conforme evidenciado nas páginas 2 e 4.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": null
+          }
+        }
+      },
+      "human": {
+        "answer_correctness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        },
+        "faithfulness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        },
+        "abstention_correctness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        }
+      },
+      "observations": ""
+    },
+    {
+      "case_id": "bor-05",
+      "question": "Qual é o endereço de e-mail do suporte do Armário Boreal?",
+      "answer": "O endereço de e-mail do suporte do Armário Boreal não está presente no contexto fornecido (p. 1 e p. 3).",
+      "case_analysis": {
+        "kind": "missing_information",
+        "multi_interpretation_candidate": null,
+        "interpretations_for_review": [],
+        "evidence": {
+          "origin": "synthetic_pages_reconstructed",
+          "completeness": "incomplete",
+          "chunks_recorded": 3,
+          "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM."
+        },
+        "partial_answer_candidate": false
+      },
+      "automatic": {
+        "answer_correctness": {
+          "original_judge": {
+            "status": "not_evaluable",
+            "model_score": null,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "not_evaluable",
+            "score": null,
+            "response_behavior": null,
+            "reason": "Pergunta sem resposta de referência; avalie a abstenção."
+          },
+          "calibrated": {
+            "status": "not_evaluable",
+            "score": null,
+            "reason": "Pergunta sem resposta de referência; avalie a abstenção.",
+            "rubric_version": "1.0.3",
+            "deterministic_correction": null
+          }
+        },
+        "faithfulness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": null,
+            "reason": "A resposta afirma corretamente que o endereço de e-mail do suporte do Armário Boreal não está presente no contexto fornecido nas páginas 1 e 3, conforme evidenciado pelo conteúdo das páginas apresentadas, que não mencionam qualquer endereço de e-mail."
+          },
+          "calibrated": {
+            "status": "not_evaluable",
+            "score": null,
+            "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM. Score histórico preservado em semantic.faithfulness.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": {
+              "rule": "insufficient_generation_evidence",
+              "previous_score": 1.0
+            }
+          }
+        },
+        "abstention_correctness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": "abstained",
+            "model_reason": "A resposta indica claramente que o endereço de e-mail do suporte do Armário Boreal não está presente no contexto fornecido, o que está de acordo com a expectativa de que a pergunta não é respondível. Portanto, a resposta é classificada como abstained e recebe pontuação máxima para pergunta não respondível."
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": "abstained",
+            "reason": "A resposta indica claramente que o endereço de e-mail do suporte do Armário Boreal não está presente no contexto fornecido, o que está de acordo com a expectativa de que a pergunta não é respondível. Portanto, a resposta é classificada como abstained e recebe pontuação máxima para pergunta não respondível."
+          },
+          "calibrated": {
+            "status": "scored",
+            "score": 1.0,
+            "reason": "A resposta indica claramente que o endereço de e-mail do suporte do Armário Boreal não está presente no contexto fornecido, o que está de acordo com a expectativa de que a pergunta não é respondível. Portanto, a resposta é classificada como abstained e recebe pontuação máxima para pergunta não respondível.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": null
+          }
+        }
+      },
+      "human": {
+        "answer_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "observations": "Respondeu corretamente a pergunta."
+        },
+        "faithfulness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        },
+        "abstention_correctness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        }
+      },
+      "observations": ""
+    },
+    {
+      "case_id": "bor-06",
+      "question": "Qual é o prazo do Armário Boreal?",
+      "answer": "O prazo para retirada no Armário Boreal é até as 18 horas (p. 3).\n\nInferencia: interpreto \"prazo\" como o horário limite para retirada; o contexto também informa que as entregas ocorrem terças e quintas às 9 horas (p. 3).",
+      "case_analysis": {
+        "kind": "ambiguous",
+        "multi_interpretation_candidate": false,
+        "interpretations_for_review": [
+          "horário limite de retirada",
+          "disponibilidade em A",
+          "disponibilidade em B"
+        ],
+        "lexical_interpretations_seen": 1,
+        "evidence": {
+          "origin": "synthetic_pages_reconstructed",
+          "completeness": "incomplete",
+          "chunks_recorded": 1,
+          "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM."
+        },
+        "partial_answer_candidate": false
+      },
+      "automatic": {
+        "answer_correctness": {
+          "original_judge": {
+            "status": "not_evaluable",
+            "model_score": null,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "not_evaluable",
+            "score": null,
+            "response_behavior": null,
+            "reason": "Pergunta sem resposta de referência; avalie a abstenção."
+          },
+          "calibrated": {
+            "status": "not_evaluable",
+            "score": null,
+            "reason": "Pergunta sem resposta de referência; avalie a abstenção.",
+            "rubric_version": "1.0.3",
+            "deterministic_correction": null
+          }
+        },
+        "faithfulness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": null,
+            "reason": "A resposta afirma que o prazo para retirada no Armário Boreal é até as 18 horas, o que está diretamente suportado pela evidência recuperada que diz: 'A retirada é permitida somente até as 18 horas.' Além disso, a inferência sobre os horários das entregas também está suportada pela evidência que menciona entregas às terças e quintas às 9 horas."
+          },
+          "calibrated": {
+            "status": "not_evaluable",
+            "score": null,
+            "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM. Score histórico preservado em semantic.faithfulness.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": {
+              "rule": "insufficient_generation_evidence",
+              "previous_score": 1.0
+            }
+          }
+        },
+        "abstention_correctness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": "answered",
+            "model_reason": "A resposta fornece o prazo para retirada no Armário Boreal, que é até as 18 horas, conforme evidenciado no texto da página 3. A interpretação do termo 'prazo' como horário limite para retirada é adequada e responde diretamente à pergunta."
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 0.0,
+            "response_behavior": "answered",
+            "reason": "A resposta fornece o prazo para retirada no Armário Boreal, que é até as 18 horas, conforme evidenciado no texto da página 3. A interpretação do termo 'prazo' como horário limite para retirada é adequada e responde diretamente à pergunta. Rubrica aplicada: A pergunta exige abstenção ou esclarecimento; a resposta escolheu uma interpretação e recebeu 0 pela rubrica."
+          },
+          "calibrated": {
+            "status": "not_evaluable",
+            "score": null,
+            "reason": "Pergunta ambígua respondida: revisão humana deve distinguir resposta que cobre as interpretações relevantes de escolha de um único sentido. Indícios lexicais não determinam o score.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": {
+              "rule": "ambiguous_answer_requires_human_review",
+              "previous_score": 0.0
+            }
+          }
+        }
+      },
+      "human": {
+        "answer_correctness": {
+          "status": "scored",
+          "score": 0.0,
+          "observations": "A resposta correta deveria ser que nao exite um prazo definido para o Armário Boreal"
+        },
+        "faithfulness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        },
+        "abstention_correctness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        }
+      },
+      "observations": ""
+    },
+    {
+      "case_id": "bor-07",
+      "question": "O que acontece com a trava na falta de energia? Cite a página.",
+      "answer": "Em caso de falta de energia, a trava do Armário Boreal permanece fechada (p. 5).\n\nO operador registra o incidente no livro L-7; o armário não oferece abertura remota (p. 5).",
+      "case_analysis": {
+        "kind": "answerable",
+        "multi_interpretation_candidate": null,
+        "interpretations_for_review": [],
+        "evidence": {
+          "origin": "synthetic_pages_reconstructed",
+          "completeness": "incomplete",
+          "chunks_recorded": 1,
+          "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM."
+        },
+        "partial_answer_candidate": false
+      },
+      "automatic": {
+        "answer_correctness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": null,
+            "reason": "A resposta está correta e completa, afirmando que a trava do Armário Boreal permanece fechada em caso de falta de energia, conforme indicado na página 5 do documento de referência. A citação da página está correta e o fato solicitado foi atendido integralmente."
+          },
+          "calibrated": {
+            "status": "scored",
+            "score": 1.0,
+            "reason": "A resposta está correta e completa, afirmando que a trava do Armário Boreal permanece fechada em caso de falta de energia, conforme indicado na página 5 do documento de referência. A citação da página está correta e o fato solicitado foi atendido integralmente.",
+            "rubric_version": "1.0.3",
+            "deterministic_correction": null
+          }
+        },
+        "faithfulness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": null,
+            "reason": "Todas as afirmações da resposta estão suportadas pela evidência recuperada da página 5, que confirma que a trava permanece fechada na falta de energia, o operador registra o incidente no livro L-7, e que o armário não oferece abertura remota."
+          },
+          "calibrated": {
+            "status": "not_evaluable",
+            "score": null,
+            "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM. Score histórico preservado em semantic.faithfulness.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": {
+              "rule": "insufficient_generation_evidence",
+              "previous_score": 1.0
+            }
+          }
+        },
+        "abstention_correctness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": "answered",
+            "model_reason": "A resposta informa claramente que a trava permanece fechada na falta de energia e cita a página 5, conforme solicitado."
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": "answered",
+            "reason": "A resposta informa claramente que a trava permanece fechada na falta de energia e cita a página 5, conforme solicitado."
+          },
+          "calibrated": {
+            "status": "scored",
+            "score": 1.0,
+            "reason": "A resposta informa claramente que a trava permanece fechada na falta de energia e cita a página 5, conforme solicitado.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": null
+          }
+        }
+      },
+      "human": {
+        "answer_correctness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        },
+        "faithfulness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        },
+        "abstention_correctness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        }
+      },
+      "observations": ""
+    },
+    {
+      "case_id": "bor-08",
+      "question": "Onde se registra um incidente de falta de energia? Cite a página.",
+      "answer": "Registra-se no livro L-7 (p. 5).",
+      "case_analysis": {
+        "kind": "answerable",
+        "multi_interpretation_candidate": null,
+        "interpretations_for_review": [],
+        "evidence": {
+          "origin": "synthetic_pages_reconstructed",
+          "completeness": "incomplete",
+          "chunks_recorded": 1,
+          "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM."
+        },
+        "partial_answer_candidate": false
+      },
+      "automatic": {
+        "answer_correctness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": null,
+            "reason": "A resposta está correta e completa: o incidente de falta de energia é registrado no livro L-7, conforme indicado na página 5 do documento de referência."
+          },
+          "calibrated": {
+            "status": "scored",
+            "score": 1.0,
+            "reason": "A resposta está correta e completa: o incidente de falta de energia é registrado no livro L-7, conforme indicado na página 5 do documento de referência.",
+            "rubric_version": "1.0.3",
+            "deterministic_correction": null
+          }
+        },
+        "faithfulness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": null,
+            "reason": "A resposta afirma que o incidente de falta de energia é registrado no livro L-7, página 5, o que está diretamente suportado pelo trecho recuperado que diz: 'O operador registra o incidente no livro L-7' na página 5."
+          },
+          "calibrated": {
+            "status": "not_evaluable",
+            "score": null,
+            "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM. Score histórico preservado em semantic.faithfulness.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": {
+              "rule": "insufficient_generation_evidence",
+              "previous_score": 1.0
+            }
+          }
+        },
+        "abstention_correctness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": "answered",
+            "model_reason": "A resposta indica claramente que o incidente de falta de energia é registrado no livro L-7, página 5, conforme evidenciado no texto recuperado."
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": "answered",
+            "reason": "A resposta indica claramente que o incidente de falta de energia é registrado no livro L-7, página 5, conforme evidenciado no texto recuperado."
+          },
+          "calibrated": {
+            "status": "scored",
+            "score": 1.0,
+            "reason": "A resposta indica claramente que o incidente de falta de energia é registrado no livro L-7, página 5, conforme evidenciado no texto recuperado.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": null
+          }
+        }
+      },
+      "human": {
+        "answer_correctness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        },
+        "faithfulness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        },
+        "abstention_correctness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        }
+      },
+      "observations": ""
+    },
+    {
+      "case_id": "bor-09",
+      "question": "Quantas caixas cabem em B e até que horas é permitida a retirada?",
+      "answer": "Capacidade do compartimento B\n\n- Cabem 4 caixas (p. 1).\n\nHorário de retirada permitido\n\n- A retirada é permitida somente até as 18 horas (p. 3).",
+      "case_analysis": {
+        "kind": "answerable",
+        "multi_interpretation_candidate": null,
+        "interpretations_for_review": [],
+        "evidence": {
+          "origin": "synthetic_pages_reconstructed",
+          "completeness": "incomplete",
+          "chunks_recorded": 2,
+          "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM."
+        },
+        "partial_answer_candidate": false
+      },
+      "automatic": {
+        "answer_correctness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": null,
+            "reason": "A resposta está correta e completa: o compartimento B comporta 4 caixas (página 1) e a retirada é permitida somente até as 18 horas (página 3), conforme o documento de referência."
+          },
+          "calibrated": {
+            "status": "scored",
+            "score": 1.0,
+            "reason": "A resposta está correta e completa: o compartimento B comporta 4 caixas (página 1) e a retirada é permitida somente até as 18 horas (página 3), conforme o documento de referência.",
+            "rubric_version": "1.0.3",
+            "deterministic_correction": null
+          }
+        },
+        "faithfulness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": null,
+            "model_reason": null
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": null,
+            "reason": "A resposta está totalmente suportada pelas evidências recuperadas: o compartimento B comporta 4 caixas (página 1) e a retirada é permitida somente até as 18 horas (página 3)."
+          },
+          "calibrated": {
+            "status": "not_evaluable",
+            "score": null,
+            "reason": "Páginas reconstituídas depois da execução; não comprovam o contexto enviado ao LLM. Score histórico preservado em semantic.faithfulness.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": {
+              "rule": "insufficient_generation_evidence",
+              "previous_score": 1.0
+            }
+          }
+        },
+        "abstention_correctness": {
+          "original_judge": {
+            "status": "scored",
+            "model_score": 1.0,
+            "model_behavior": "answered",
+            "model_reason": "A resposta forneceu claramente que o compartimento B comporta 4 caixas e que a retirada é permitida até as 18 horas, conforme evidências das páginas 1 e 3."
+          },
+          "stage3b": {
+            "status": "scored",
+            "score": 1.0,
+            "response_behavior": "answered",
+            "reason": "A resposta forneceu claramente que o compartimento B comporta 4 caixas e que a retirada é permitida até as 18 horas, conforme evidências das páginas 1 e 3."
+          },
+          "calibrated": {
+            "status": "scored",
+            "score": 1.0,
+            "reason": "A resposta forneceu claramente que o compartimento B comporta 4 caixas e que a retirada é permitida até as 18 horas, conforme evidências das páginas 1 e 3.",
+            "rubric_version": "1.1.0",
+            "deterministic_correction": null
+          }
+        }
+      },
+      "human": {
+        "answer_correctness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        },
+        "faithfulness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        },
+        "abstention_correctness": {
+          "status": null,
+          "score": null,
+          "observations": ""
+        }
+      },
+      "observations": ""
+    }
+  ]
+}

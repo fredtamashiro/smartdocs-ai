@@ -1,7 +1,7 @@
 from functools import lru_cache
 from pathlib import Path
 
-from pydantic import field_validator
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings
 
 
@@ -9,6 +9,13 @@ class Settings(BaseSettings):
     """Centraliza as configuracoes da aplicacao lidas do ambiente."""
     app_env: str = "local"
     app_name: str = "SmartDocs AI"
+    langfuse_tracing_enabled: bool = False
+    langfuse_public_key: str = ""
+    langfuse_secret_key: str = ""
+    langfuse_base_url: str = "https://cloud.langfuse.com"
+    langfuse_sample_rate: float = Field(default=1.0, ge=0.0, le=1.0)
+    evaluation_judge_model: str = "gpt-4.1-mini"
+    evaluation_judge_timeout_seconds: float = Field(default=60.0, gt=0)
     openai_api_key: str
     app_api_key: str | None = None
 

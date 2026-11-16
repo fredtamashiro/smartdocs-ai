@@ -7,6 +7,7 @@ from langchain_openai import ChatOpenAI
 from langgraph.graph import END, StateGraph
 
 from app.config import get_settings
+from app.services.langfuse_observability import finish_step, invoke_generation, observe_step
 from app.services.pgvector_search_service import search_similar_chunks_pgvector
 from app.services.query_strategy_service import (
     decide_query_generation_strategy,
@@ -127,6 +128,12 @@ def _build_answer_context(chunks: list[dict[str, Any]]) -> str:
     )
 
 
+def _deduplication_key(metadata: dict[str, Any]) -> tuple[Any, Any]:
+    """Prefer a real chunk index, including zero; fall back to page only if absent."""
+    chunk_index = metadata.get("chunk_index")
+    return metadata.get("document_id"), chunk_index if chunk_index is not None else metadata.get("page")
+
+
 def _is_objective_question(question: str) -> bool:
     normalized_question = question.strip().lower()
 
@@ -188,7 +195,7 @@ Pergunta original:
 """
 
         llm = create_chat_model()
-        response = llm.invoke(prompt)
+        response = invoke_generation(llm, prompt, name="smartdocs.rag.query_rewrite", prompt_id="query_rewrite.v1")
         rewritten_question = response.content.strip() or state["question"]
 
         return {
@@ -231,13 +238,44 @@ def generate_search_queries(state: ManualGraphState) -> ManualGraphState:
 
 
 def retrieve_context(state: ManualGraphState) -> ManualGraphState:
+    started_at = perf_counter()
+    with observe_step("smartdocs.rag.retrieve", metadata={
+        "query_count": len(state.get("search_queries") or [state["question"]]),
+        "result_limit": state["k"],
+        "score_kind": "cosine_distance",
+    }) as observation:
+        try:
+            result, vector_search_failures = _retrieve_context_impl(state)
+        except BaseException as error:
+            category = "interrupted" if not isinstance(error, Exception) else "retrieval"
+            finish_step(observation, started_at, "failure", metadata={"error_category": category})
+            raise
+        distances = [chunk["score"] for chunk in result["chunks"] if isinstance(chunk.get("score"), (int, float))]
+        finish_step(observation, started_at, "success", metadata={
+            "retrieved_chunks_count": result["retrieved_chunks_count"],
+            "deduplicated_chunks_count": result["deduplicated_chunks_count"],
+            "candidate_chunks_count": len(result["chunks"]),
+            "vector_search_failures": vector_search_failures,
+            "has_context": result["has_context"],
+            "best_cosine_distance": min(distances) if distances else None,
+        })
+        return result
+
+
+def _retrieve_context_impl(state: ManualGraphState) -> tuple[ManualGraphState, int]:
+    from app.evaluation.evidence_capture import record_retrieval_stage, retrieval_stages
+
     settings = get_settings()
     max_chunks_to_grade = max(settings.max_chunks_to_grade, 1)
     search_queries = state.get("search_queries") or [state["question"]]
     candidates_by_key: dict[tuple[Any, Any], dict[str, Any]] = {}
+    raw_candidates: list[dict[str, Any]] = []
+    raw_winners: dict[tuple[Any, Any], dict[str, Any]] = {}
+    raw_keys: dict[int, tuple[Any, Any]] = {}
     timings = dict(state.get("timings") or {})
     retrieved_chunks_count = 0
     embedding_reused_from_cache = False
+    vector_search_failures = 0
 
     def register_timing(name: str, duration_ms: int) -> None:
         timings[name] = timings.get(name, 0) + duration_ms
@@ -261,12 +299,16 @@ def retrieve_context(state: ManualGraphState) -> ManualGraphState:
                     on_timing=register_timing,
                 )
             except Exception:
-                logger.exception("Erro ao buscar com pgvector para query: %s", query)
+                logger.exception("Erro ao buscar com pgvector")
+                vector_search_failures += 1
                 chunks = []
 
         retrieved_chunks_count += len(chunks)
+        if retrieval_stages() is not None:
+            raw_candidates.extend(chunks)
 
         for chunk in chunks:
+            chunk_index = chunk.get("chunk_index")
             metadata = {
                 **chunk.get("metadata", {}),
                 "document_id": (
@@ -274,10 +316,8 @@ def retrieve_context(state: ManualGraphState) -> ManualGraphState:
                     or chunk.get("metadata", {}).get("document_id")
                 ),
                 "page": chunk.get("page") or chunk.get("metadata", {}).get("page"),
-                "chunk_index": (
-                    chunk.get("chunk_index")
-                    or chunk.get("metadata", {}).get("chunk_index")
-                ),
+                "chunk_index": (chunk_index if chunk_index is not None
+                                else chunk.get("metadata", {}).get("chunk_index")),
             }
 
             preview_text = (
@@ -299,12 +339,9 @@ def retrieve_context(state: ManualGraphState) -> ManualGraphState:
                 "preview_for_grader": preview_text,
             }
 
-            key = (
-                metadata.get("document_id"),
-                metadata.get("chunk_index")
-                if metadata.get("chunk_index") is not None
-                else metadata.get("page"),
-            )
+            key = _deduplication_key(metadata)
+            if retrieval_stages() is not None:
+                raw_keys[id(chunk)] = key
             existing_chunk = candidates_by_key.get(key)
 
             if existing_chunk is None or chunk["score"] < existing_chunk["score"]:
@@ -312,10 +349,36 @@ def retrieve_context(state: ManualGraphState) -> ManualGraphState:
                     **normalized_chunk,
                     "matched_query": query,
                 }
+                if retrieval_stages() is not None:
+                    raw_winners[key] = chunk
 
     all_candidates = list(candidates_by_key.values())
     all_candidates.sort(key=lambda item: item["score"])
     graded_candidates = all_candidates[:max_chunks_to_grade]
+    if retrieval_stages() is not None:
+        discard_reasons = {}
+        for chunk in raw_candidates:
+            winner = raw_winners[raw_keys[id(chunk)]]
+            if winner is chunk:
+                continue
+            discard_reasons[id(chunk)] = (
+                "dedup_key_collision_different_chunk"
+                if (chunk.get("chunk_index"), chunk.get("page")) !=
+                   (winner.get("chunk_index"), winner.get("page"))
+                else "duplicate_replaced_or_not_better"
+            )
+        record_retrieval_stage("B_after_deduplication", raw_candidates,
+                               selected=list(raw_winners.values()),
+                               parameters={"dedup_key": "document_id_and_chunk_index_or_page",
+                                           "ranking": "cosine_distance_ascending"},
+                               discarded_reason="duplicate_replaced_or_not_better",
+                               discard_reasons=discard_reasons)
+        record_retrieval_stage("C_grader_candidates", all_candidates,
+                               selected=graded_candidates,
+                               parameters={"max_chunks_to_grade": max_chunks_to_grade,
+                                           "max_relevance_cosine_distance": state["max_relevance_score"],
+                                           "minimum_cosine_distance": min((c["score"] for c in graded_candidates), default=None)},
+                               discarded_reason="max_chunks_to_grade")
     min_score = min((chunk["score"] for chunk in graded_candidates), default=None)
     has_relevant_context = (
         min_score is not None
@@ -337,7 +400,7 @@ def retrieve_context(state: ManualGraphState) -> ManualGraphState:
             state.get("embedding_reused_from_cache", False)
             or embedding_reused_from_cache
         ),
-    }
+    }, vector_search_failures
 
 
 def _parse_grader_response(raw_content: str) -> list[dict[str, Any]]:
@@ -365,6 +428,8 @@ def _apply_grades_to_chunks(
     grades: list[dict[str, Any]],
     fallback_on_failure: bool,
 ) -> ManualGraphState:
+    from app.evaluation.evidence_capture import record_grader_discard_reason
+
     grades_by_key = {}
 
     for grade in grades:
@@ -381,6 +446,7 @@ def _apply_grades_to_chunks(
         grade = grades_by_key.get((str(chunk_index), str(page)))
 
         if not grade or grade.get("is_relevant") is not True:
+            record_grader_discard_reason(chunk, "grader_result_missing" if not grade else "grader_marked_not_relevant")
             continue
 
         enriched_metadata = {
@@ -460,7 +526,7 @@ Chunks:
 """
 
     llm = create_chat_model()
-    response = llm.invoke(prompt)
+    response = invoke_generation(llm, prompt, name="smartdocs.rag.classify_batch", prompt_id="relevance_batch.v1")
     grades = _parse_grader_response(response.content)
 
     if not grades:
@@ -512,7 +578,7 @@ Chunk:
 """
 
     llm = create_chat_model()
-    response = llm.invoke(prompt)
+    response = invoke_generation(llm, prompt, name="smartdocs.rag.classify_chunk", prompt_id="relevance_chunk.v1")
     grades = _parse_grader_response(response.content)
     return grades[0] if grades else None
 
@@ -664,7 +730,19 @@ def grade_retrieved_chunks(state: ManualGraphState) -> ManualGraphState:
 
         return _grade_chunks_per_chunk(base_state, chunks)
 
-    return _measure_step(state, "relevance_grader_ms", _run)
+    result = _measure_step(state, "relevance_grader_ms", _run)
+    from app.evaluation.evidence_capture import grader_discard_reasons, record_retrieval_stage, retrieval_stages
+    if retrieval_stages() is not None:
+        record_retrieval_stage("D_relevance_grader", state.get("chunks") or [],
+                               selected=result.get("chunks") or [],
+                               match_by_chunk_id=True,
+                               parameters={"grader_mode": result.get("grader_mode"),
+                                           "grader_enabled": result.get("grader_enabled"),
+                                           "grader_skipped_reason": result.get("grader_skipped_reason"),
+                                           "skip_grader_decision": result.get("skip_grader_decision")},
+                               discarded_reason="grader_not_selected",
+                               discard_reasons=grader_discard_reasons())
+    return result
 
 
 def should_generate_answer(state: ManualGraphState) -> str:
@@ -672,6 +750,11 @@ def should_generate_answer(state: ManualGraphState) -> str:
 
 
 def answer_not_found(state: ManualGraphState) -> ManualGraphState:
+    from app.evaluation.evidence_capture import record_retrieval_stage, retrieval_stages
+    if retrieval_stages() is not None:
+        record_retrieval_stage("E_final_context_selection", state.get("chunks") or [], selected=[],
+                               parameters={"route": "answer_not_found", "context_chars": len(state.get("context") or "")},
+                               discarded_reason="no_relevant_context")
     return {
         **state,
         "answer": (
@@ -683,6 +766,17 @@ def answer_not_found(state: ManualGraphState) -> ManualGraphState:
 
 def generate_answer(state: ManualGraphState) -> ManualGraphState:
     def _run() -> ManualGraphState:
+        from app.evaluation.evidence_capture import record_retrieval_stage, retrieval_stages
+        if retrieval_stages() is not None:
+            settings = get_settings()
+            chunks = state.get("chunks") or []
+            cap = max(settings.max_answer_context_chunks, 1)
+            record_retrieval_stage("E_final_context_selection", chunks,
+                                   selected=chunks[:cap],
+                                   parameters={"max_answer_context_chunks": cap,
+                                               "max_answer_context_chars_per_chunk": max(settings.max_answer_context_chars_per_chunk, 200),
+                                               "context_chars": len(state["context"])},
+                                   discarded_reason="max_answer_context_chunks")
         concise_instruction = ""
 
         if _is_objective_question(state["question"]):
@@ -722,7 +816,7 @@ Contexto:
 """
 
         llm = create_chat_model()
-        response = llm.invoke(prompt)
+        response = invoke_generation(llm, prompt, name="smartdocs.rag.generate_answer", prompt_id="answer.v1")
         return {
             **state,
             "answer": response.content,

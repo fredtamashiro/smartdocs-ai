@@ -1,0 +1,2 @@
+backend/app/evaluation/*.json text eol=lf
+backend/app/evaluation/baselines/*.json text eol=lf

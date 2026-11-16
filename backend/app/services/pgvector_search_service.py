@@ -4,9 +4,12 @@ from typing import Any
 
 from langchain_openai import OpenAIEmbeddings
 from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
 
 from app.config import get_settings
 from app.database.database import SessionLocal
+from app.services.langfuse_observability import finish_step, observe_step
+from app.evaluation.evidence_capture import record_vector_results
 
 
 def _format_embedding_for_pgvector(embedding: list[float]) -> str:
@@ -19,6 +22,39 @@ def search_similar_chunks_pgvector(
     k: int = 4,
     query_embedding: list[float] | None = None,
     on_timing: Callable[[str, int], None] | None = None,
+) -> list[dict[str, Any]]:
+    started_at = perf_counter()
+    with observe_step("smartdocs.rag.vector_search", metadata={
+        "result_limit": k,
+        "score_kind": "cosine_distance",
+        "embedding_reused": query_embedding is not None,
+    }) as observation:
+        try:
+            results = _search_similar_chunks_pgvector_impl(
+                document_id, query, k, query_embedding, on_timing
+            )
+        except BaseException as error:
+            category = (
+                "interrupted" if not isinstance(error, Exception)
+                else "vector_database" if isinstance(error, SQLAlchemyError)
+                else "embedding_or_vector_search"
+            )
+            finish_step(observation, started_at, "failure", metadata={"error_category": category})
+            raise
+        finish_step(observation, started_at, "success", metadata={
+            "chunks_count": len(results),
+            "cosine_distances": [item["score"] for item in results],
+        })
+        record_vector_results(query, document_id, k, results)
+        return results
+
+
+def _search_similar_chunks_pgvector_impl(
+    document_id: str,
+    query: str,
+    k: int,
+    query_embedding: list[float] | None,
+    on_timing: Callable[[str, int], None] | None,
 ) -> list[dict[str, Any]]:
     settings = get_settings()
     resolved_query_embedding = query_embedding

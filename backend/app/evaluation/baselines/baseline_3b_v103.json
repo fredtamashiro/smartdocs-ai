@@ -1,0 +1,2376 @@
+{
+  "dataset": "smartdocs-synthetic-rag-1.0.0-491e84f6",
+  "dataset_version": "1.0.0",
+  "dataset_sha256": "491e84f6673b5514361cd4211d1f59a114aed8d44ff321b243bc368ed521e2c9",
+  "run_name": "baseline-v1",
+  "published": false,
+  "experiment_id": null,
+  "experiment_url": null,
+  "model_configured": "gpt-5-mini",
+  "created_at": "2026-11-16T18:43:35.791066+00:00",
+  "summary": {
+    "cases": 18,
+    "execution_success_rate": 1.0,
+    "abstention_pass_rate": 0.5,
+    "citation_pass_rate": 1.0,
+    "mean_fact_coverage_lexical": 0.9642857142857143,
+    "mean_latency_ms": 13896.277777777777
+  },
+  "cases": [
+    {
+      "case_id": "aur-01",
+      "document": "estacao_aurora",
+      "category": "factual",
+      "question": "Como ligar a Estação Aurora?",
+      "expected": {
+        "answerable": true,
+        "facts": [
+          [
+            "3 segundos"
+          ]
+        ],
+        "citation_required": false
+      },
+      "output": {
+        "answer": "Para ligar a Estação Aurora, pressione INICIAR por 3 segundos (p. 1).\n\nPassos para ligar:\n1. Pressione o botão INICIAR e mantenha pressionado por 3 segundos (p. 1).\n\nIndicador de estado:\n- O LED azul indica que a estação está pronta (p. 1).\n\nLimitação:\n- O contexto não fornece informações sobre como desligar a estação, procedimentos de configuração adicionais ou solução de problemas (p. 1).",
+        "source_pages": [
+          1
+        ],
+        "error_type": null,
+        "latency_ms": 24070,
+        "generations": [
+          {
+            "name": "smartdocs.rag.query_rewrite",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 90,
+              "output": 574,
+              "total": 664
+            }
+          },
+          {
+            "name": "smartdocs.rag.classify_batch",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 342,
+              "output": 865,
+              "total": 1207
+            }
+          },
+          {
+            "name": "smartdocs.rag.generate_answer",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 278,
+              "output": 494,
+              "total": 772
+            }
+          }
+        ],
+        "reported_tokens": {
+          "input": 710,
+          "output": 1933,
+          "total": 2643
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "metrics": {
+        "execution_success": true,
+        "abstention_expected": false,
+        "abstention_detected": false,
+        "abstention_pass": true,
+        "citation_required": false,
+        "citation_present": true,
+        "citation_pass": null,
+        "fact_coverage_lexical": 1.0,
+        "facts_found": 1,
+        "facts_expected": 1,
+        "latency_ms": 24070,
+        "reported_tokens": {
+          "input": 710,
+          "output": 1933,
+          "total": 2643
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "trace_id": null,
+      "evidence_origin": "synthetic_pages_reconstructed",
+      "semantic": {
+        "faithfulness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta afirma que para ligar a Estação Aurora deve-se pressionar o botão INICIAR por 3 segundos e que o LED azul indica que a estação está pronta, o que está totalmente suportado pela evidência recuperada.",
+          "response_behavior": null,
+          "model_behavior": null,
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1376,
+          "reported_tokens": {
+            "input": 529,
+            "output": 64,
+            "total": 593
+          },
+          "reported_cost_usd": null
+        },
+        "abstention_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta fornece claramente o procedimento para ligar a Estação Aurora, indicando que é necessário pressionar o botão INICIAR por 3 segundos, conforme evidenciado no texto recuperado. Portanto, a questão foi respondida de forma completa e correta.",
+          "response_behavior": "answered",
+          "model_behavior": "answered",
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1578,
+          "reported_tokens": {
+            "input": 648,
+            "output": 67,
+            "total": 715
+          },
+          "reported_cost_usd": null,
+          "model_reason": "A resposta fornece claramente o procedimento para ligar a Estação Aurora, indicando que é necessário pressionar o botão INICIAR por 3 segundos, conforme evidenciado no texto recuperado. Portanto, a questão foi respondida de forma completa e correta."
+        },
+        "answer_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta está correta e completa segundo o documento de referência. Indica que para ligar a Estação Aurora deve-se pressionar o botão INICIAR por 3 segundos, e que o LED azul indica que a estação está pronta, conforme o texto da página 1. Não há informações adicionais necessárias para responder à pergunta.",
+          "response_behavior": null,
+          "model_behavior": null,
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 3697,
+          "reported_tokens": {
+            "input": 691,
+            "output": 82,
+            "total": 773
+          },
+          "reported_cost_usd": null
+        }
+      }
+    },
+    {
+      "case_id": "aur-02",
+      "document": "estacao_aurora",
+      "category": "factual",
+      "question": "Qual cor de LED indica que a Estação Aurora está pronta?",
+      "expected": {
+        "answerable": true,
+        "facts": [
+          [
+            "azul"
+          ]
+        ],
+        "citation_required": false
+      },
+      "output": {
+        "answer": "O LED azul indica que a Estação Aurora está pronta. (p. 1)",
+        "source_pages": [
+          1
+        ],
+        "error_type": null,
+        "latency_ms": 11795,
+        "generations": [
+          {
+            "name": "smartdocs.rag.classify_batch",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 348,
+              "output": 898,
+              "total": 1246
+            }
+          },
+          {
+            "name": "smartdocs.rag.generate_answer",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 331,
+              "output": 155,
+              "total": 486
+            }
+          }
+        ],
+        "reported_tokens": {
+          "input": 679,
+          "output": 1053,
+          "total": 1732
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "metrics": {
+        "execution_success": true,
+        "abstention_expected": false,
+        "abstention_detected": false,
+        "abstention_pass": true,
+        "citation_required": false,
+        "citation_present": true,
+        "citation_pass": null,
+        "fact_coverage_lexical": 1.0,
+        "facts_found": 1,
+        "facts_expected": 1,
+        "latency_ms": 11795,
+        "reported_tokens": {
+          "input": 679,
+          "output": 1053,
+          "total": 1732
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "trace_id": null,
+      "evidence_origin": "synthetic_pages_reconstructed",
+      "semantic": {
+        "answer_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta está correta e completa, indicando que o LED azul é o que mostra que a Estação Aurora está pronta, conforme o documento de referência na página 1.",
+          "response_behavior": null,
+          "model_behavior": null,
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1122,
+          "reported_tokens": {
+            "input": 604,
+            "output": 51,
+            "total": 655
+          },
+          "reported_cost_usd": null
+        },
+        "faithfulness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A evidência recuperada confirma que o LED azul indica que a Estação Aurora está pronta, correspondendo exatamente à afirmação da resposta.",
+          "response_behavior": null,
+          "model_behavior": null,
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1178,
+          "reported_tokens": {
+            "input": 442,
+            "output": 45,
+            "total": 487
+          },
+          "reported_cost_usd": null
+        },
+        "abstention_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta indica claramente que o LED azul indica que a Estação Aurora está pronta, conforme evidenciado no texto recuperado da página 1.",
+          "response_behavior": "answered",
+          "model_behavior": "answered",
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1177,
+          "reported_tokens": {
+            "input": 561,
+            "output": 46,
+            "total": 607
+          },
+          "reported_cost_usd": null,
+          "model_reason": "A resposta indica claramente que o LED azul indica que a Estação Aurora está pronta, conforme evidenciado no texto recuperado da página 1."
+        }
+      }
+    },
+    {
+      "case_id": "aur-03",
+      "document": "estacao_aurora",
+      "category": "factual",
+      "question": "Qual é a autonomia nominal da estação?",
+      "expected": {
+        "answerable": true,
+        "facts": [
+          [
+            "8 horas"
+          ]
+        ],
+        "citation_required": false
+      },
+      "output": {
+        "answer": "A autonomia nominal da Estação Aurora é de 8 horas (p. 2).",
+        "source_pages": [
+          2
+        ],
+        "error_type": null,
+        "latency_ms": 13793,
+        "generations": [
+          {
+            "name": "smartdocs.rag.query_rewrite",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 91,
+              "output": 566,
+              "total": 657
+            }
+          },
+          {
+            "name": "smartdocs.rag.classify_batch",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 342,
+              "output": 511,
+              "total": 853
+            }
+          },
+          {
+            "name": "smartdocs.rag.generate_answer",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 278,
+              "output": 155,
+              "total": 433
+            }
+          }
+        ],
+        "reported_tokens": {
+          "input": 711,
+          "output": 1232,
+          "total": 1943
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "metrics": {
+        "execution_success": true,
+        "abstention_expected": false,
+        "abstention_detected": false,
+        "abstention_pass": true,
+        "citation_required": false,
+        "citation_present": true,
+        "citation_pass": null,
+        "fact_coverage_lexical": 1.0,
+        "facts_found": 1,
+        "facts_expected": 1,
+        "latency_ms": 13793,
+        "reported_tokens": {
+          "input": 711,
+          "output": 1232,
+          "total": 1943
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "trace_id": null,
+      "evidence_origin": "synthetic_pages_reconstructed",
+      "semantic": {
+        "answer_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta indica corretamente que a autonomia nominal da Estação Aurora é de 8 horas, conforme consta na página 2 do documento de referência.",
+          "response_behavior": null,
+          "model_behavior": null,
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 938,
+          "reported_tokens": {
+            "input": 600,
+            "output": 46,
+            "total": 646
+          },
+          "reported_cost_usd": null
+        },
+        "faithfulness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A evidência recuperada confirma que a autonomia nominal da Estação Aurora é de 8 horas, conforme afirmado na resposta.",
+          "response_behavior": null,
+          "model_behavior": null,
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1193,
+          "reported_tokens": {
+            "input": 436,
+            "output": 43,
+            "total": 479
+          },
+          "reported_cost_usd": null
+        },
+        "abstention_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta fornece diretamente a autonomia nominal da estação, que é de 8 horas, conforme evidenciado no texto recuperado da página 2.",
+          "response_behavior": "answered",
+          "model_behavior": "answered",
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1095,
+          "reported_tokens": {
+            "input": 555,
+            "output": 46,
+            "total": 601
+          },
+          "reported_cost_usd": null,
+          "model_reason": "A resposta fornece diretamente a autonomia nominal da estação, que é de 8 horas, conforme evidenciado no texto recuperado da página 2."
+        }
+      }
+    },
+    {
+      "case_id": "aur-04",
+      "document": "estacao_aurora",
+      "category": "distributed",
+      "question": "Com que frequência a estação mede temperatura e umidade?",
+      "expected": {
+        "answerable": true,
+        "facts": [
+          [
+            "5 minutos"
+          ],
+          [
+            "10 minutos"
+          ]
+        ],
+        "citation_required": false
+      },
+      "output": {
+        "answer": "Temperatura: a cada 5 minutos (p. 3)\n\nUmidade: a cada 10 minutos (p. 3)",
+        "source_pages": [
+          3
+        ],
+        "error_type": null,
+        "latency_ms": 10166,
+        "generations": [
+          {
+            "name": "smartdocs.rag.classify_batch",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 357,
+              "output": 651,
+              "total": 1008
+            }
+          },
+          {
+            "name": "smartdocs.rag.generate_answer",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 277,
+              "output": 421,
+              "total": 698
+            }
+          }
+        ],
+        "reported_tokens": {
+          "input": 634,
+          "output": 1072,
+          "total": 1706
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "metrics": {
+        "execution_success": true,
+        "abstention_expected": false,
+        "abstention_detected": false,
+        "abstention_pass": true,
+        "citation_required": false,
+        "citation_present": true,
+        "citation_pass": null,
+        "fact_coverage_lexical": 1.0,
+        "facts_found": 2,
+        "facts_expected": 2,
+        "latency_ms": 10166,
+        "reported_tokens": {
+          "input": 634,
+          "output": 1072,
+          "total": 1706
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "trace_id": null,
+      "evidence_origin": "synthetic_pages_reconstructed",
+      "semantic": {
+        "answer_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta está correta e completa, indicando que a temperatura é medida a cada 5 minutos e a umidade a cada 10 minutos, conforme o documento de referência na página 3.",
+          "response_behavior": null,
+          "model_behavior": null,
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1247,
+          "reported_tokens": {
+            "input": 618,
+            "output": 55,
+            "total": 673
+          },
+          "reported_cost_usd": null
+        },
+        "faithfulness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A evidência recuperada confirma que a estação mede temperatura a cada 5 minutos e umidade a cada 10 minutos, exatamente como afirmado na resposta.",
+          "response_behavior": null,
+          "model_behavior": null,
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1851,
+          "reported_tokens": {
+            "input": 450,
+            "output": 49,
+            "total": 499
+          },
+          "reported_cost_usd": null
+        },
+        "abstention_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta fornece claramente a frequência de medição da temperatura (a cada 5 minutos) e da umidade (a cada 10 minutos), conforme evidenciado no texto da página 3.",
+          "response_behavior": "answered",
+          "model_behavior": "answered",
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1122,
+          "reported_tokens": {
+            "input": 569,
+            "output": 56,
+            "total": 625
+          },
+          "reported_cost_usd": null,
+          "model_reason": "A resposta fornece claramente a frequência de medição da temperatura (a cada 5 minutos) e da umidade (a cada 10 minutos), conforme evidenciado no texto da página 3."
+        }
+      }
+    },
+    {
+      "case_id": "aur-05",
+      "document": "estacao_aurora",
+      "category": "multi_chunk",
+      "question": "Como ligar a estação e por quanto tempo ela funciona com bateria?",
+      "expected": {
+        "answerable": true,
+        "facts": [
+          [
+            "3 segundos"
+          ],
+          [
+            "8 horas"
+          ]
+        ],
+        "citation_required": false
+      },
+      "output": {
+        "answer": "Como ligar a estação\n\n1. O contexto não informa o procedimento para ligar a estação. (p. 2)\n\nPor quanto tempo ela funciona com bateria\n\n- Capacidade da bateria: 12 Ah. (p. 2)  \n- Autonomia nominal: 8 horas. (p. 2)  \n- Recarrega por USB-C; tempo de recarga aproximado: 4 horas. (p. 2)",
+        "source_pages": [
+          2
+        ],
+        "error_type": null,
+        "latency_ms": 15203,
+        "generations": [
+          {
+            "name": "smartdocs.rag.classify_batch",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 347,
+              "output": 766,
+              "total": 1113
+            }
+          },
+          {
+            "name": "smartdocs.rag.generate_answer",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 283,
+              "output": 867,
+              "total": 1150
+            }
+          }
+        ],
+        "reported_tokens": {
+          "input": 630,
+          "output": 1633,
+          "total": 2263
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "metrics": {
+        "execution_success": true,
+        "abstention_expected": false,
+        "abstention_detected": false,
+        "abstention_pass": true,
+        "citation_required": false,
+        "citation_present": true,
+        "citation_pass": null,
+        "fact_coverage_lexical": 0.5,
+        "facts_found": 1,
+        "facts_expected": 2,
+        "latency_ms": 15203,
+        "reported_tokens": {
+          "input": 630,
+          "output": 1633,
+          "total": 2263
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "trace_id": null,
+      "evidence_origin": "synthetic_pages_reconstructed",
+      "semantic": {
+        "answer_correctness": {
+          "status": "scored",
+          "score": 0.5,
+          "reason": "A resposta não informa corretamente como ligar a estação, omitindo o procedimento de pressionar INICIAR por 3 segundos, que está no documento. A informação sobre a autonomia da bateria (8 horas) está correta e completa.",
+          "response_behavior": null,
+          "model_behavior": null,
+          "model_score": 0.5,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1048,
+          "reported_tokens": {
+            "input": 688,
+            "output": 65,
+            "total": 753
+          },
+          "reported_cost_usd": null
+        },
+        "faithfulness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta afirma que a estação tem bateria de 12 Ah, autonomia nominal de 8 horas e recarga por USB-C em aproximadamente 4 horas, o que está totalmente suportado pela evidência recuperada da página 2.",
+          "response_behavior": null,
+          "model_behavior": null,
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1162,
+          "reported_tokens": {
+            "input": 524,
+            "output": 64,
+            "total": 588
+          },
+          "reported_cost_usd": null
+        },
+        "abstention_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta não informa como ligar a estação, apenas menciona que o contexto não fornece esse procedimento, embora a pergunta seja respondível. A autonomia da bateria está correta, mas a parte sobre ligar a estação está ausente, o que torna a resposta incompleta. Rubrica aplicada: Score ajustado para 1.0 pela escala da rubrica conforme o comportamento classificado.",
+          "response_behavior": "answered",
+          "model_behavior": "answered",
+          "model_score": 0.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1150,
+          "reported_tokens": {
+            "input": 643,
+            "output": 70,
+            "total": 713
+          },
+          "reported_cost_usd": null,
+          "model_reason": "A resposta não informa como ligar a estação, apenas menciona que o contexto não fornece esse procedimento, embora a pergunta seja respondível. A autonomia da bateria está correta, mas a parte sobre ligar a estação está ausente, o que torna a resposta incompleta."
+        }
+      }
+    },
+    {
+      "case_id": "aur-06",
+      "document": "estacao_aurora",
+      "category": "absent",
+      "question": "Qual versão de Bluetooth a Estação Aurora utiliza?",
+      "expected": {
+        "answerable": false,
+        "facts": [],
+        "citation_required": false
+      },
+      "output": {
+        "answer": "Não há informação sobre a versão de Bluetooth da Estação Aurora nos documentos fornecidos (p. 2 e 3).",
+        "source_pages": [
+          2,
+          3,
+          5
+        ],
+        "error_type": null,
+        "latency_ms": 10860,
+        "generations": [
+          {
+            "name": "smartdocs.rag.classify_batch",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 344,
+              "output": 435,
+              "total": 779
+            }
+          },
+          {
+            "name": "smartdocs.rag.generate_answer",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 375,
+              "output": 546,
+              "total": 921
+            }
+          }
+        ],
+        "reported_tokens": {
+          "input": 719,
+          "output": 981,
+          "total": 1700
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "metrics": {
+        "execution_success": true,
+        "abstention_expected": true,
+        "abstention_detected": true,
+        "abstention_pass": true,
+        "citation_required": false,
+        "citation_present": true,
+        "citation_pass": null,
+        "fact_coverage_lexical": null,
+        "facts_found": 0,
+        "facts_expected": 0,
+        "latency_ms": 10860,
+        "reported_tokens": {
+          "input": 719,
+          "output": 981,
+          "total": 1700
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "trace_id": null,
+      "evidence_origin": "synthetic_pages_reconstructed",
+      "semantic": {
+        "answer_correctness": {
+          "status": "not_evaluable",
+          "score": null,
+          "reason": "Pergunta sem resposta de referência; avalie a abstenção.",
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": null,
+          "reported_tokens": null,
+          "reported_cost_usd": null
+        },
+        "faithfulness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta afirma que não há informação sobre a versão de Bluetooth da Estação Aurora nos documentos fornecidos, o que é suportado pela evidência recuperada que não menciona qualquer versão de Bluetooth.",
+          "response_behavior": null,
+          "model_behavior": null,
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1306,
+          "reported_tokens": {
+            "input": 524,
+            "output": 57,
+            "total": 581
+          },
+          "reported_cost_usd": null
+        },
+        "abstention_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta indica claramente que não há informação sobre a versão de Bluetooth da Estação Aurora nos documentos fornecidos, o que está de acordo com a evidência apresentada. Portanto, a resposta é correta e completa para a pergunta não respondível. Rubrica aplicada: Recusa explícita reconhecida pela métrica conservadora; comportamento final: abstenção.",
+          "response_behavior": "abstained",
+          "model_behavior": "answered",
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1143,
+          "reported_tokens": {
+            "input": 643,
+            "output": 65,
+            "total": 708
+          },
+          "reported_cost_usd": null,
+          "model_reason": "A resposta indica claramente que não há informação sobre a versão de Bluetooth da Estação Aurora nos documentos fornecidos, o que está de acordo com a evidência apresentada. Portanto, a resposta é correta e completa para a pergunta não respondível."
+        }
+      }
+    },
+    {
+      "case_id": "aur-07",
+      "document": "estacao_aurora",
+      "category": "ambiguous",
+      "question": "Qual é o intervalo da Estação Aurora?",
+      "expected": {
+        "answerable": false,
+        "facts": [],
+        "citation_required": false
+      },
+      "output": {
+        "answer": "A Estação Aurora realiza as medidas nos seguintes intervalos:\n\n- Temperatura: a cada 5 minutos (p. 3)  \n- Umidade: a cada 10 minutos (p. 3)\n\nAlém disso, os dados ficam armazenados por 30 dias (p. 3).",
+        "source_pages": [
+          3
+        ],
+        "error_type": null,
+        "latency_ms": 19424,
+        "generations": [
+          {
+            "name": "smartdocs.rag.query_rewrite",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 92,
+              "output": 549,
+              "total": 641
+            }
+          },
+          {
+            "name": "smartdocs.rag.classify_batch",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 343,
+              "output": 713,
+              "total": 1056
+            }
+          },
+          {
+            "name": "smartdocs.rag.generate_answer",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 275,
+              "output": 454,
+              "total": 729
+            }
+          }
+        ],
+        "reported_tokens": {
+          "input": 710,
+          "output": 1716,
+          "total": 2426
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "metrics": {
+        "execution_success": true,
+        "abstention_expected": true,
+        "abstention_detected": false,
+        "abstention_pass": false,
+        "citation_required": false,
+        "citation_present": true,
+        "citation_pass": null,
+        "fact_coverage_lexical": null,
+        "facts_found": 0,
+        "facts_expected": 0,
+        "latency_ms": 19424,
+        "reported_tokens": {
+          "input": 710,
+          "output": 1716,
+          "total": 2426
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "trace_id": null,
+      "evidence_origin": "synthetic_pages_reconstructed",
+      "semantic": {
+        "answer_correctness": {
+          "status": "not_evaluable",
+          "score": null,
+          "reason": "Pergunta sem resposta de referência; avalie a abstenção.",
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": null,
+          "reported_tokens": null,
+          "reported_cost_usd": null
+        },
+        "faithfulness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta está totalmente suportada pela evidência recuperada, que confirma os intervalos de medição da Estação Aurora para temperatura (5 minutos) e umidade (10 minutos), bem como o armazenamento dos dados por 30 dias.",
+          "response_behavior": null,
+          "model_behavior": null,
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1228,
+          "reported_tokens": {
+            "input": 478,
+            "output": 65,
+            "total": 543
+          },
+          "reported_cost_usd": null
+        },
+        "abstention_correctness": {
+          "status": "scored",
+          "score": 0.0,
+          "reason": "A pergunta é considerada não respondível (answerable: false) segundo o esperado, mas a resposta fornecida apresenta informações específicas sobre os intervalos de medição da Estação Aurora, o que caracteriza uma resposta fornecida para um fato que não deveria ser respondido. Portanto, a resposta é classificada como answered com score 0.",
+          "response_behavior": "answered",
+          "model_behavior": "answered",
+          "model_score": 0.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1603,
+          "reported_tokens": {
+            "input": 597,
+            "output": 85,
+            "total": 682
+          },
+          "reported_cost_usd": null,
+          "model_reason": "A pergunta é considerada não respondível (answerable: false) segundo o esperado, mas a resposta fornecida apresenta informações específicas sobre os intervalos de medição da Estação Aurora, o que caracteriza uma resposta fornecida para um fato que não deveria ser respondido. Portanto, a resposta é classificada como answered com score 0."
+        }
+      }
+    },
+    {
+      "case_id": "aur-08",
+      "document": "estacao_aurora",
+      "category": "citation",
+      "question": "Quando limpar o sensor e o que deve ser evitado? Cite a página.",
+      "expected": {
+        "answerable": true,
+        "facts": [
+          [
+            "14 dias"
+          ],
+          [
+            "água"
+          ]
+        ],
+        "citation_required": true
+      },
+      "output": {
+        "answer": "Quando limpar\n1. Limpe o sensor com pano seco a cada 14 dias. (p. 5)\n\nO que deve ser evitado\n1. Não use água. (p. 5)",
+        "source_pages": [
+          5
+        ],
+        "error_type": null,
+        "latency_ms": 12967,
+        "generations": [
+          {
+            "name": "smartdocs.rag.classify_batch",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 366,
+              "output": 649,
+              "total": 1015
+            }
+          },
+          {
+            "name": "smartdocs.rag.generate_answer",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 330,
+              "output": 500,
+              "total": 830
+            }
+          }
+        ],
+        "reported_tokens": {
+          "input": 696,
+          "output": 1149,
+          "total": 1845
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "metrics": {
+        "execution_success": true,
+        "abstention_expected": false,
+        "abstention_detected": false,
+        "abstention_pass": true,
+        "citation_required": true,
+        "citation_present": true,
+        "citation_pass": true,
+        "fact_coverage_lexical": 1.0,
+        "facts_found": 2,
+        "facts_expected": 2,
+        "latency_ms": 12967,
+        "reported_tokens": {
+          "input": 696,
+          "output": 1149,
+          "total": 1845
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "trace_id": null,
+      "evidence_origin": "synthetic_pages_reconstructed",
+      "semantic": {
+        "answer_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta está correta e completa: indica que o sensor deve ser limpo com pano seco a cada 14 dias e que não se deve usar água, conforme a página 5 do documento de referência.",
+          "response_behavior": null,
+          "model_behavior": null,
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1046,
+          "reported_tokens": {
+            "input": 638,
+            "output": 58,
+            "total": 696
+          },
+          "reported_cost_usd": null
+        },
+        "faithfulness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta está totalmente suportada pela evidência recuperada da página 5, que indica limpar o sensor com pano seco a cada 14 dias e não usar água.",
+          "response_behavior": null,
+          "model_behavior": null,
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1209,
+          "reported_tokens": {
+            "input": 471,
+            "output": 51,
+            "total": 522
+          },
+          "reported_cost_usd": null
+        },
+        "abstention_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta fornece claramente quando limpar o sensor (a cada 14 dias) e o que deve ser evitado (não usar água), citando a página 5 conforme solicitado.",
+          "response_behavior": "answered",
+          "model_behavior": "answered",
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1196,
+          "reported_tokens": {
+            "input": 590,
+            "output": 53,
+            "total": 643
+          },
+          "reported_cost_usd": null,
+          "model_reason": "A resposta fornece claramente quando limpar o sensor (a cada 14 dias) e o que deve ser evitado (não usar água), citando a página 5 conforme solicitado."
+        }
+      }
+    },
+    {
+      "case_id": "aur-09",
+      "document": "estacao_aurora",
+      "category": "multi_chunk",
+      "question": "Por quanto tempo os dados são guardados e qual é a duração da garantia?",
+      "expected": {
+        "answerable": true,
+        "facts": [
+          [
+            "30 dias"
+          ],
+          [
+            "18 meses"
+          ]
+        ],
+        "citation_required": false
+      },
+      "output": {
+        "answer": "Tempo de armazenamento dos dados\n- Os dados ficam armazenados por 30 dias (p. 3).\n\nDuração da garantia\n- A garantia fictícia é de 18 meses (p. 5).\n\nLimitação\n- O contexto não especifica condições adicionais, cobertura ou termos da garantia.",
+        "source_pages": [
+          3,
+          5
+        ],
+        "error_type": null,
+        "latency_ms": 14796,
+        "generations": [
+          {
+            "name": "smartdocs.rag.classify_batch",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 350,
+              "output": 573,
+              "total": 923
+            }
+          },
+          {
+            "name": "smartdocs.rag.generate_answer",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 331,
+              "output": 710,
+              "total": 1041
+            }
+          }
+        ],
+        "reported_tokens": {
+          "input": 681,
+          "output": 1283,
+          "total": 1964
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "metrics": {
+        "execution_success": true,
+        "abstention_expected": false,
+        "abstention_detected": false,
+        "abstention_pass": true,
+        "citation_required": false,
+        "citation_present": true,
+        "citation_pass": null,
+        "fact_coverage_lexical": 1.0,
+        "facts_found": 2,
+        "facts_expected": 2,
+        "latency_ms": 14796,
+        "reported_tokens": {
+          "input": 681,
+          "output": 1283,
+          "total": 1964
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "trace_id": null,
+      "evidence_origin": "synthetic_pages_reconstructed",
+      "semantic": {
+        "faithfulness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta está totalmente suportada pelas evidências recuperadas: os dados são armazenados por 30 dias conforme indicado na página 3, e a garantia fictícia é de 18 meses conforme indicado na página 5. A limitação mencionada também está correta, pois o contexto não especifica condições adicionais da garantia.",
+          "response_behavior": null,
+          "model_behavior": null,
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1251,
+          "reported_tokens": {
+            "input": 532,
+            "output": 82,
+            "total": 614
+          },
+          "reported_cost_usd": null
+        },
+        "answer_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta está correta e completa. O tempo de armazenamento dos dados é de 30 dias, conforme indicado na página 3 do documento. A duração da garantia é de 18 meses, conforme indicado na página 5. A resposta também menciona corretamente que o contexto não especifica condições adicionais da garantia, o que está de acordo com o documento.",
+          "response_behavior": null,
+          "model_behavior": null,
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1531,
+          "reported_tokens": {
+            "input": 658,
+            "output": 88,
+            "total": 746
+          },
+          "reported_cost_usd": null
+        },
+        "abstention_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta fornece claramente o tempo de armazenamento dos dados (30 dias) e a duração da garantia (18 meses), conforme evidenciado nas páginas 3 e 5 do contexto. Portanto, a questão foi respondida de forma completa e correta.",
+          "response_behavior": "answered",
+          "model_behavior": "answered",
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1236,
+          "reported_tokens": {
+            "input": 651,
+            "output": 66,
+            "total": 717
+          },
+          "reported_cost_usd": null,
+          "model_reason": "A resposta fornece claramente o tempo de armazenamento dos dados (30 dias) e a duração da garantia (18 meses), conforme evidenciado nas páginas 3 e 5 do contexto. Portanto, a questão foi respondida de forma completa e correta."
+        }
+      }
+    },
+    {
+      "case_id": "bor-01",
+      "document": "armario_boreal",
+      "category": "factual",
+      "question": "Quantas caixas cabem no compartimento A?",
+      "expected": {
+        "answerable": true,
+        "facts": [
+          [
+            "6 caixas"
+          ]
+        ],
+        "citation_required": false
+      },
+      "output": {
+        "answer": "O compartimento A comporta 6 caixas (p. 1).",
+        "source_pages": [
+          1
+        ],
+        "error_type": null,
+        "latency_ms": 10081,
+        "generations": [
+          {
+            "name": "smartdocs.rag.classify_batch",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 359,
+              "output": 690,
+              "total": 1049
+            }
+          },
+          {
+            "name": "smartdocs.rag.generate_answer",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 280,
+              "output": 216,
+              "total": 496
+            }
+          }
+        ],
+        "reported_tokens": {
+          "input": 639,
+          "output": 906,
+          "total": 1545
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "metrics": {
+        "execution_success": true,
+        "abstention_expected": false,
+        "abstention_detected": false,
+        "abstention_pass": true,
+        "citation_required": false,
+        "citation_present": true,
+        "citation_pass": null,
+        "fact_coverage_lexical": 1.0,
+        "facts_found": 1,
+        "facts_expected": 1,
+        "latency_ms": 10081,
+        "reported_tokens": {
+          "input": 639,
+          "output": 906,
+          "total": 1545
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "trace_id": null,
+      "evidence_origin": "synthetic_pages_reconstructed",
+      "semantic": {
+        "answer_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta indica corretamente que o compartimento A comporta 6 caixas, conforme o documento de referência na página 1.",
+          "response_behavior": null,
+          "model_behavior": null,
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1089,
+          "reported_tokens": {
+            "input": 597,
+            "output": 42,
+            "total": 639
+          },
+          "reported_cost_usd": null
+        },
+        "faithfulness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A evidência recuperada confirma que o compartimento A comporta 6 caixas, exatamente como afirmado na resposta.",
+          "response_behavior": null,
+          "model_behavior": null,
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 914,
+          "reported_tokens": {
+            "input": 436,
+            "output": 41,
+            "total": 477
+          },
+          "reported_cost_usd": null
+        },
+        "abstention_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta forneceu diretamente a informação solicitada, indicando que o compartimento A comporta 6 caixas, conforme evidenciado no texto da página 1.",
+          "response_behavior": "answered",
+          "model_behavior": "answered",
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 932,
+          "reported_tokens": {
+            "input": 555,
+            "output": 49,
+            "total": 604
+          },
+          "reported_cost_usd": null,
+          "model_reason": "A resposta forneceu diretamente a informação solicitada, indicando que o compartimento A comporta 6 caixas, conforme evidenciado no texto da página 1."
+        }
+      }
+    },
+    {
+      "case_id": "bor-02",
+      "document": "armario_boreal",
+      "category": "factual",
+      "question": "Qual cartão libera o compartimento B?",
+      "expected": {
+        "answerable": true,
+        "facts": [
+          [
+            "verde"
+          ]
+        ],
+        "citation_required": false
+      },
+      "output": {
+        "answer": "O cartão verde libera o compartimento B (p. 2).\n\nProcedimento:\n1. Use o cartão verde.\n2. Pressione CONFIRMAR (p. 2).",
+        "source_pages": [
+          2
+        ],
+        "error_type": null,
+        "latency_ms": 16403,
+        "generations": [
+          {
+            "name": "smartdocs.rag.query_rewrite",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 91,
+              "output": 492,
+              "total": 583
+            }
+          },
+          {
+            "name": "smartdocs.rag.classify_batch",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 362,
+              "output": 578,
+              "total": 940
+            }
+          },
+          {
+            "name": "smartdocs.rag.generate_answer",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 278,
+              "output": 430,
+              "total": 708
+            }
+          }
+        ],
+        "reported_tokens": {
+          "input": 731,
+          "output": 1500,
+          "total": 2231
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "metrics": {
+        "execution_success": true,
+        "abstention_expected": false,
+        "abstention_detected": false,
+        "abstention_pass": true,
+        "citation_required": false,
+        "citation_present": true,
+        "citation_pass": null,
+        "fact_coverage_lexical": 1.0,
+        "facts_found": 1,
+        "facts_expected": 1,
+        "latency_ms": 16403,
+        "reported_tokens": {
+          "input": 731,
+          "output": 1500,
+          "total": 2231
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "trace_id": null,
+      "evidence_origin": "synthetic_pages_reconstructed",
+      "semantic": {
+        "answer_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta indica corretamente que o cartão verde libera o compartimento B, conforme o documento de referência na página 2. O procedimento adicional de pressionar CONFIRMAR também está correto e presente no documento.",
+          "response_behavior": null,
+          "model_behavior": null,
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 962,
+          "reported_tokens": {
+            "input": 620,
+            "output": 58,
+            "total": 678
+          },
+          "reported_cost_usd": null
+        },
+        "faithfulness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A evidência recuperada confirma que o cartão verde libera o compartimento B, conforme afirmado na resposta.",
+          "response_behavior": null,
+          "model_behavior": null,
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 961,
+          "reported_tokens": {
+            "input": 458,
+            "output": 39,
+            "total": 497
+          },
+          "reported_cost_usd": null
+        },
+        "abstention_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta indica claramente que o cartão verde libera o compartimento B, conforme evidenciado no texto recuperado da página 2.",
+          "response_behavior": "answered",
+          "model_behavior": "answered",
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1623,
+          "reported_tokens": {
+            "input": 577,
+            "output": 43,
+            "total": 620
+          },
+          "reported_cost_usd": null,
+          "model_reason": "A resposta indica claramente que o cartão verde libera o compartimento B, conforme evidenciado no texto recuperado da página 2."
+        }
+      }
+    },
+    {
+      "case_id": "bor-03",
+      "document": "armario_boreal",
+      "category": "distributed",
+      "question": "Em quais dias e horário ocorrem as entregas?",
+      "expected": {
+        "answerable": true,
+        "facts": [
+          [
+            "terça"
+          ],
+          [
+            "quinta"
+          ],
+          [
+            "9 horas",
+            "9h"
+          ]
+        ],
+        "citation_required": false
+      },
+      "output": {
+        "answer": "As entregas ocorrem terça-feira e quinta-feira às 9 horas (p. 3).",
+        "source_pages": [
+          3
+        ],
+        "error_type": null,
+        "latency_ms": 10079,
+        "generations": [
+          {
+            "name": "smartdocs.rag.classify_batch",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 365,
+              "output": 640,
+              "total": 1005
+            }
+          },
+          {
+            "name": "smartdocs.rag.generate_answer",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 281,
+              "output": 222,
+              "total": 503
+            }
+          }
+        ],
+        "reported_tokens": {
+          "input": 646,
+          "output": 862,
+          "total": 1508
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "metrics": {
+        "execution_success": true,
+        "abstention_expected": false,
+        "abstention_detected": false,
+        "abstention_pass": true,
+        "citation_required": false,
+        "citation_present": true,
+        "citation_pass": null,
+        "fact_coverage_lexical": 1.0,
+        "facts_found": 3,
+        "facts_expected": 3,
+        "latency_ms": 10079,
+        "reported_tokens": {
+          "input": 646,
+          "output": 862,
+          "total": 1508
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "trace_id": null,
+      "evidence_origin": "synthetic_pages_reconstructed",
+      "semantic": {
+        "answer_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta está correta e completa, indicando que as entregas ocorrem terça-feira e quinta-feira às 9 horas, conforme o documento de referência na página 3.",
+          "response_behavior": null,
+          "model_behavior": null,
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1219,
+          "reported_tokens": {
+            "input": 615,
+            "output": 52,
+            "total": 667
+          },
+          "reported_cost_usd": null
+        },
+        "faithfulness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta está totalmente suportada pela evidência recuperada, que confirma que as entregas ocorrem terça-feira e quinta-feira às 9 horas.",
+          "response_behavior": null,
+          "model_behavior": null,
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 962,
+          "reported_tokens": {
+            "input": 452,
+            "output": 48,
+            "total": 500
+          },
+          "reported_cost_usd": null
+        },
+        "abstention_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta fornece claramente os dias (terça-feira e quinta-feira) e o horário (às 9 horas) das entregas, conforme evidenciado no texto da página 3.",
+          "response_behavior": "answered",
+          "model_behavior": "answered",
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1389,
+          "reported_tokens": {
+            "input": 571,
+            "output": 53,
+            "total": 624
+          },
+          "reported_cost_usd": null,
+          "model_reason": "A resposta fornece claramente os dias (terça-feira e quinta-feira) e o horário (às 9 horas) das entregas, conforme evidenciado no texto da página 3."
+        }
+      }
+    },
+    {
+      "case_id": "bor-04",
+      "document": "armario_boreal",
+      "category": "multi_chunk",
+      "question": "Qual cartão abre A e por quanto tempo o item fica disponível nesse compartimento?",
+      "expected": {
+        "answerable": true,
+        "facts": [
+          [
+            "azul"
+          ],
+          [
+            "48 horas"
+          ]
+        ],
+        "citation_required": false
+      },
+      "output": {
+        "answer": "Cartão que abre o compartimento A\n- Cartão azul — pressione CONFIRMAR (p. 2).\n\nTempo de disponibilidade\n- Itens no compartimento A ficam disponíveis por 48 horas (p. 4).",
+        "source_pages": [
+          2,
+          4
+        ],
+        "error_type": null,
+        "latency_ms": 10654,
+        "generations": [
+          {
+            "name": "smartdocs.rag.classify_batch",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 365,
+              "output": 505,
+              "total": 870
+            }
+          },
+          {
+            "name": "smartdocs.rag.generate_answer",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 388,
+              "output": 440,
+              "total": 828
+            }
+          }
+        ],
+        "reported_tokens": {
+          "input": 753,
+          "output": 945,
+          "total": 1698
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "metrics": {
+        "execution_success": true,
+        "abstention_expected": false,
+        "abstention_detected": false,
+        "abstention_pass": true,
+        "citation_required": false,
+        "citation_present": true,
+        "citation_pass": null,
+        "fact_coverage_lexical": 1.0,
+        "facts_found": 2,
+        "facts_expected": 2,
+        "latency_ms": 10654,
+        "reported_tokens": {
+          "input": 753,
+          "output": 945,
+          "total": 1698
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "trace_id": null,
+      "evidence_origin": "synthetic_pages_reconstructed",
+      "semantic": {
+        "answer_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta está correta e completa: o cartão que abre o compartimento A é o cartão azul, e o item fica disponível nesse compartimento por 48 horas, conforme indicado nas páginas 2 e 4 do documento de referência.",
+          "response_behavior": null,
+          "model_behavior": null,
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1154,
+          "reported_tokens": {
+            "input": 641,
+            "output": 64,
+            "total": 705
+          },
+          "reported_cost_usd": null
+        },
+        "faithfulness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta afirma corretamente que o cartão azul abre o compartimento A e que os itens ficam disponíveis por 48 horas, conforme evidenciado nas páginas 2 e 4 do material recuperado.",
+          "response_behavior": null,
+          "model_behavior": null,
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1148,
+          "reported_tokens": {
+            "input": 527,
+            "output": 56,
+            "total": 583
+          },
+          "reported_cost_usd": null
+        },
+        "abstention_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta fornece claramente que o cartão azul abre o compartimento A e que os itens ficam disponíveis por 48 horas, conforme evidenciado nas páginas 2 e 4.",
+          "response_behavior": "answered",
+          "model_behavior": "answered",
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 954,
+          "reported_tokens": {
+            "input": 646,
+            "output": 52,
+            "total": 698
+          },
+          "reported_cost_usd": null,
+          "model_reason": "A resposta fornece claramente que o cartão azul abre o compartimento A e que os itens ficam disponíveis por 48 horas, conforme evidenciado nas páginas 2 e 4."
+        }
+      }
+    },
+    {
+      "case_id": "bor-05",
+      "document": "armario_boreal",
+      "category": "absent",
+      "question": "Qual é o endereço de e-mail do suporte do Armário Boreal?",
+      "expected": {
+        "answerable": false,
+        "facts": [],
+        "citation_required": false
+      },
+      "output": {
+        "answer": "O endereço de e-mail do suporte do Armário Boreal não está presente no contexto fornecido (p. 1 e p. 3).",
+        "source_pages": [
+          1,
+          3,
+          5
+        ],
+        "error_type": null,
+        "latency_ms": 9838,
+        "generations": [
+          {
+            "name": "smartdocs.rag.classify_batch",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 365,
+              "output": 504,
+              "total": 869
+            }
+          },
+          {
+            "name": "smartdocs.rag.generate_answer",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 383,
+              "output": 423,
+              "total": 806
+            }
+          }
+        ],
+        "reported_tokens": {
+          "input": 748,
+          "output": 927,
+          "total": 1675
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "metrics": {
+        "execution_success": true,
+        "abstention_expected": true,
+        "abstention_detected": true,
+        "abstention_pass": true,
+        "citation_required": false,
+        "citation_present": false,
+        "citation_pass": null,
+        "fact_coverage_lexical": null,
+        "facts_found": 0,
+        "facts_expected": 0,
+        "latency_ms": 9838,
+        "reported_tokens": {
+          "input": 748,
+          "output": 927,
+          "total": 1675
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "trace_id": null,
+      "evidence_origin": "synthetic_pages_reconstructed",
+      "semantic": {
+        "answer_correctness": {
+          "status": "not_evaluable",
+          "score": null,
+          "reason": "Pergunta sem resposta de referência; avalie a abstenção.",
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": null,
+          "reported_tokens": null,
+          "reported_cost_usd": null
+        },
+        "faithfulness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta afirma corretamente que o endereço de e-mail do suporte do Armário Boreal não está presente no contexto fornecido nas páginas 1 e 3, conforme evidenciado pelo conteúdo das páginas apresentadas, que não mencionam qualquer endereço de e-mail.",
+          "response_behavior": null,
+          "model_behavior": null,
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1273,
+          "reported_tokens": {
+            "input": 545,
+            "output": 69,
+            "total": 614
+          },
+          "reported_cost_usd": null
+        },
+        "abstention_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta indica claramente que o endereço de e-mail do suporte do Armário Boreal não está presente no contexto fornecido, o que está de acordo com a expectativa de que a pergunta não é respondível. Portanto, a resposta é classificada como abstained e recebe pontuação máxima para pergunta não respondível.",
+          "response_behavior": "abstained",
+          "model_behavior": "abstained",
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1190,
+          "reported_tokens": {
+            "input": 664,
+            "output": 82,
+            "total": 746
+          },
+          "reported_cost_usd": null,
+          "model_reason": "A resposta indica claramente que o endereço de e-mail do suporte do Armário Boreal não está presente no contexto fornecido, o que está de acordo com a expectativa de que a pergunta não é respondível. Portanto, a resposta é classificada como abstained e recebe pontuação máxima para pergunta não respondível."
+        }
+      }
+    },
+    {
+      "case_id": "bor-06",
+      "document": "armario_boreal",
+      "category": "ambiguous",
+      "question": "Qual é o prazo do Armário Boreal?",
+      "expected": {
+        "answerable": false,
+        "facts": [],
+        "citation_required": false
+      },
+      "output": {
+        "answer": "O prazo para retirada no Armário Boreal é até as 18 horas (p. 3).\n\nInferencia: interpreto \"prazo\" como o horário limite para retirada; o contexto também informa que as entregas ocorrem terças e quintas às 9 horas (p. 3).",
+        "source_pages": [
+          3
+        ],
+        "error_type": null,
+        "latency_ms": 20074,
+        "generations": [
+          {
+            "name": "smartdocs.rag.query_rewrite",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 93,
+              "output": 433,
+              "total": 526
+            }
+          },
+          {
+            "name": "smartdocs.rag.classify_batch",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 360,
+              "output": 757,
+              "total": 1117
+            }
+          },
+          {
+            "name": "smartdocs.rag.generate_answer",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 279,
+              "output": 584,
+              "total": 863
+            }
+          }
+        ],
+        "reported_tokens": {
+          "input": 732,
+          "output": 1774,
+          "total": 2506
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "metrics": {
+        "execution_success": true,
+        "abstention_expected": true,
+        "abstention_detected": false,
+        "abstention_pass": false,
+        "citation_required": false,
+        "citation_present": true,
+        "citation_pass": null,
+        "fact_coverage_lexical": null,
+        "facts_found": 0,
+        "facts_expected": 0,
+        "latency_ms": 20074,
+        "reported_tokens": {
+          "input": 732,
+          "output": 1774,
+          "total": 2506
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "trace_id": null,
+      "evidence_origin": "synthetic_pages_reconstructed",
+      "semantic": {
+        "answer_correctness": {
+          "status": "not_evaluable",
+          "score": null,
+          "reason": "Pergunta sem resposta de referência; avalie a abstenção.",
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": null,
+          "reported_tokens": null,
+          "reported_cost_usd": null
+        },
+        "abstention_correctness": {
+          "status": "scored",
+          "score": 0.0,
+          "reason": "A resposta fornece o prazo para retirada no Armário Boreal, que é até as 18 horas, conforme evidenciado no texto da página 3. A interpretação do termo 'prazo' como horário limite para retirada é adequada e responde diretamente à pergunta. Rubrica aplicada: A pergunta exige abstenção ou esclarecimento; a resposta escolheu uma interpretação e recebeu 0 pela rubrica.",
+          "response_behavior": "answered",
+          "model_behavior": "answered",
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1276,
+          "reported_tokens": {
+            "input": 599,
+            "output": 69,
+            "total": 668
+          },
+          "reported_cost_usd": null,
+          "model_reason": "A resposta fornece o prazo para retirada no Armário Boreal, que é até as 18 horas, conforme evidenciado no texto da página 3. A interpretação do termo 'prazo' como horário limite para retirada é adequada e responde diretamente à pergunta."
+        },
+        "faithfulness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta afirma que o prazo para retirada no Armário Boreal é até as 18 horas, o que está diretamente suportado pela evidência recuperada que diz: 'A retirada é permitida somente até as 18 horas.' Além disso, a inferência sobre os horários das entregas também está suportada pela evidência que menciona entregas às terças e quintas às 9 horas.",
+          "response_behavior": null,
+          "model_behavior": null,
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1518,
+          "reported_tokens": {
+            "input": 480,
+            "output": 99,
+            "total": 579
+          },
+          "reported_cost_usd": null
+        }
+      }
+    },
+    {
+      "case_id": "bor-07",
+      "document": "armario_boreal",
+      "category": "citation",
+      "question": "O que acontece com a trava na falta de energia? Cite a página.",
+      "expected": {
+        "answerable": true,
+        "facts": [
+          [
+            "fechada"
+          ]
+        ],
+        "citation_required": true
+      },
+      "output": {
+        "answer": "Em caso de falta de energia, a trava do Armário Boreal permanece fechada (p. 5).\n\nO operador registra o incidente no livro L-7; o armário não oferece abertura remota (p. 5).",
+        "source_pages": [
+          5
+        ],
+        "error_type": null,
+        "latency_ms": 14484,
+        "generations": [
+          {
+            "name": "smartdocs.rag.classify_batch",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 369,
+              "output": 962,
+              "total": 1331
+            }
+          },
+          {
+            "name": "smartdocs.rag.generate_answer",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 289,
+              "output": 505,
+              "total": 794
+            }
+          }
+        ],
+        "reported_tokens": {
+          "input": 658,
+          "output": 1467,
+          "total": 2125
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "metrics": {
+        "execution_success": true,
+        "abstention_expected": false,
+        "abstention_detected": false,
+        "abstention_pass": true,
+        "citation_required": true,
+        "citation_present": true,
+        "citation_pass": true,
+        "fact_coverage_lexical": 1.0,
+        "facts_found": 1,
+        "facts_expected": 1,
+        "latency_ms": 14484,
+        "reported_tokens": {
+          "input": 658,
+          "output": 1467,
+          "total": 2125
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "trace_id": null,
+      "evidence_origin": "synthetic_pages_reconstructed",
+      "semantic": {
+        "answer_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta está correta e completa, afirmando que a trava do Armário Boreal permanece fechada em caso de falta de energia, conforme indicado na página 5 do documento de referência. A citação da página está correta e o fato solicitado foi atendido integralmente.",
+          "response_behavior": null,
+          "model_behavior": null,
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1187,
+          "reported_tokens": {
+            "input": 638,
+            "output": 72,
+            "total": 710
+          },
+          "reported_cost_usd": null
+        },
+        "faithfulness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "Todas as afirmações da resposta estão suportadas pela evidência recuperada da página 5, que confirma que a trava permanece fechada na falta de energia, o operador registra o incidente no livro L-7, e que o armário não oferece abertura remota.",
+          "response_behavior": null,
+          "model_behavior": null,
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1271,
+          "reported_tokens": {
+            "input": 480,
+            "output": 71,
+            "total": 551
+          },
+          "reported_cost_usd": null
+        },
+        "abstention_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta informa claramente que a trava permanece fechada na falta de energia e cita a página 5, conforme solicitado.",
+          "response_behavior": "answered",
+          "model_behavior": "answered",
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1105,
+          "reported_tokens": {
+            "input": 599,
+            "output": 41,
+            "total": 640
+          },
+          "reported_cost_usd": null,
+          "model_reason": "A resposta informa claramente que a trava permanece fechada na falta de energia e cita a página 5, conforme solicitado."
+        }
+      }
+    },
+    {
+      "case_id": "bor-08",
+      "document": "armario_boreal",
+      "category": "citation",
+      "question": "Onde se registra um incidente de falta de energia? Cite a página.",
+      "expected": {
+        "answerable": true,
+        "facts": [
+          [
+            "L-7"
+          ]
+        ],
+        "citation_required": true
+      },
+      "output": {
+        "answer": "Registra-se no livro L-7 (p. 5).",
+        "source_pages": [
+          5
+        ],
+        "error_type": null,
+        "latency_ms": 11701,
+        "generations": [
+          {
+            "name": "smartdocs.rag.classify_batch",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 368,
+              "output": 962,
+              "total": 1330
+            }
+          },
+          {
+            "name": "smartdocs.rag.generate_answer",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 335,
+              "output": 215,
+              "total": 550
+            }
+          }
+        ],
+        "reported_tokens": {
+          "input": 703,
+          "output": 1177,
+          "total": 1880
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "metrics": {
+        "execution_success": true,
+        "abstention_expected": false,
+        "abstention_detected": false,
+        "abstention_pass": true,
+        "citation_required": true,
+        "citation_present": true,
+        "citation_pass": true,
+        "fact_coverage_lexical": 1.0,
+        "facts_found": 1,
+        "facts_expected": 1,
+        "latency_ms": 11701,
+        "reported_tokens": {
+          "input": 703,
+          "output": 1177,
+          "total": 1880
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "trace_id": null,
+      "evidence_origin": "synthetic_pages_reconstructed",
+      "semantic": {
+        "answer_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta está correta e completa: o incidente de falta de energia é registrado no livro L-7, conforme indicado na página 5 do documento de referência.",
+          "response_behavior": null,
+          "model_behavior": null,
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1133,
+          "reported_tokens": {
+            "input": 601,
+            "output": 49,
+            "total": 650
+          },
+          "reported_cost_usd": null
+        },
+        "faithfulness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta afirma que o incidente de falta de energia é registrado no livro L-7, página 5, o que está diretamente suportado pelo trecho recuperado que diz: 'O operador registra o incidente no livro L-7' na página 5.",
+          "response_behavior": null,
+          "model_behavior": null,
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1110,
+          "reported_tokens": {
+            "input": 443,
+            "output": 69,
+            "total": 512
+          },
+          "reported_cost_usd": null
+        },
+        "abstention_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta indica claramente que o incidente de falta de energia é registrado no livro L-7, página 5, conforme evidenciado no texto recuperado.",
+          "response_behavior": "answered",
+          "model_behavior": "answered",
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1049,
+          "reported_tokens": {
+            "input": 562,
+            "output": 48,
+            "total": 610
+          },
+          "reported_cost_usd": null,
+          "model_reason": "A resposta indica claramente que o incidente de falta de energia é registrado no livro L-7, página 5, conforme evidenciado no texto recuperado."
+        }
+      }
+    },
+    {
+      "case_id": "bor-09",
+      "document": "armario_boreal",
+      "category": "multi_chunk",
+      "question": "Quantas caixas cabem em B e até que horas é permitida a retirada?",
+      "expected": {
+        "answerable": true,
+        "facts": [
+          [
+            "4 caixas"
+          ],
+          [
+            "18 horas",
+            "18h"
+          ]
+        ],
+        "citation_required": false
+      },
+      "output": {
+        "answer": "Capacidade do compartimento B\n\n- Cabem 4 caixas (p. 1).\n\nHorário de retirada permitido\n\n- A retirada é permitida somente até as 18 horas (p. 3).",
+        "source_pages": [
+          1,
+          3
+        ],
+        "error_type": null,
+        "latency_ms": 13745,
+        "generations": [
+          {
+            "name": "smartdocs.rag.classify_batch",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 366,
+              "output": 759,
+              "total": 1125
+            }
+          },
+          {
+            "name": "smartdocs.rag.generate_answer",
+            "model": "gpt-5-mini-2025-08-07",
+            "usage": {
+              "input": 338,
+              "output": 564,
+              "total": 902
+            }
+          }
+        ],
+        "reported_tokens": {
+          "input": 704,
+          "output": 1323,
+          "total": 2027
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "metrics": {
+        "execution_success": true,
+        "abstention_expected": false,
+        "abstention_detected": false,
+        "abstention_pass": true,
+        "citation_required": false,
+        "citation_present": true,
+        "citation_pass": null,
+        "fact_coverage_lexical": 1.0,
+        "facts_found": 2,
+        "facts_expected": 2,
+        "latency_ms": 13745,
+        "reported_tokens": {
+          "input": 704,
+          "output": 1323,
+          "total": 2027
+        },
+        "usage_complete": true,
+        "reported_cost_usd": null
+      },
+      "trace_id": null,
+      "evidence_origin": "synthetic_pages_reconstructed",
+      "semantic": {
+        "answer_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta está correta e completa: o compartimento B comporta 4 caixas (página 1) e a retirada é permitida somente até as 18 horas (página 3), conforme o documento de referência.",
+          "response_behavior": null,
+          "model_behavior": null,
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1137,
+          "reported_tokens": {
+            "input": 644,
+            "output": 63,
+            "total": 707
+          },
+          "reported_cost_usd": null
+        },
+        "faithfulness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta está totalmente suportada pelas evidências recuperadas: o compartimento B comporta 4 caixas (página 1) e a retirada é permitida somente até as 18 horas (página 3).",
+          "response_behavior": null,
+          "model_behavior": null,
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1127,
+          "reported_tokens": {
+            "input": 527,
+            "output": 63,
+            "total": 590
+          },
+          "reported_cost_usd": null
+        },
+        "abstention_correctness": {
+          "status": "scored",
+          "score": 1.0,
+          "reason": "A resposta forneceu claramente que o compartimento B comporta 4 caixas e que a retirada é permitida até as 18 horas, conforme evidências das páginas 1 e 3.",
+          "response_behavior": "answered",
+          "model_behavior": "answered",
+          "model_score": 1.0,
+          "rubric_version": "1.0.3",
+          "error_type": null,
+          "latency_ms": 1064,
+          "reported_tokens": {
+            "input": 646,
+            "output": 56,
+            "total": 702
+          },
+          "reported_cost_usd": null,
+          "model_reason": "A resposta forneceu claramente que o compartimento B comporta 4 caixas e que a retirada é permitida até as 18 horas, conforme evidências das páginas 1 e 3."
+        }
+      }
+    }
+  ],
+  "metrics_version": "1.0.1",
+  "judge_model": "gpt-4.1-mini",
+  "rubric_versions": {
+    "answer_correctness": "1.0.3",
+    "faithfulness": "1.0.3",
+    "abstention_correctness": "1.0.3"
+  },
+  "judged_at": "2026-11-16T19:07:00.321453+00:00",
+  "semantic_summary": {
+    "answer_correctness": {
+      "mean_score": 0.9642857142857143,
+      "scored": 14,
+      "not_evaluable": 4,
+      "errors": 0
+    },
+    "faithfulness": {
+      "mean_score": 1.0,
+      "scored": 18,
+      "not_evaluable": 0,
+      "errors": 0
+    },
+    "abstention_correctness": {
+      "mean_score": 0.8888888888888888,
+      "scored": 18,
+      "not_evaluable": 0,
+      "errors": 0
+    },
+    "expected_abstention_cases": {
+      "pass_rate": 0.5,
+      "scored": 4,
+      "not_evaluable": 0
+    }
+  },
+  "error_analysis": {
+    "factually_incorrect": [],
+    "incomplete_or_uncertain": [
+      "aur-05"
+    ],
+    "ungrounded": [],
+    "abstention_failures": [
+      "aur-07",
+      "bor-06"
+    ],
+    "lexical_semantic_disagreements": [],
+    "baseline_ambiguous_cases": [
+      "aur-07",
+      "bor-06"
+    ],
+    "judge_behavior_disagreements": [
+      "aur-06"
+    ]
+  },
+  "scores_published": false
+}
