@@ -28,6 +28,7 @@ O projeto foi estruturado como uma base de produto real, com separação entre A
 - Login admin via cookie HttpOnly
 - Worker RQ para processamento assíncrono
 - Usage logs / auditoria
+- Observabilidade do RAG com Langfuse e avaliação em dataset sintético versionado
 
 ## Arquitetura
 
@@ -36,17 +37,18 @@ O projeto foi estruturado como uma base de produto real, com separação entre A
 - Worker: RQ + Redis
 - Banco: PostgreSQL + pgvector
 - IA: OpenAI, LangChain, LangGraph
+- LLMOps: Langfuse, avaliações semânticas, revisão humana e testes de regressão
 - Redis: fila e rate limit
 
 Documentação visual:
 
-- [docs/architecture.md](C:/IA/auto-manual-ai/docs/architecture.md:1)
+- [docs/architecture.md](docs/architecture.md)
 
 ## Experiência web
 
-- `/`: landing page do projeto, com foco em apresentação, arquitetura e deploy
+- `/`: landing page do projeto, com destaque para LLMOps e Qualidade de IA, arquitetura e deploy
 - `/documentos`: workspace de consulta, com seleção de documento, resumo, tópicos, histórico local de perguntas, respostas com fontes e ações administrativas para upload e delete
-- `/observabilidade`: página pública de portfólio sobre tracing do RAG, avaliação semântica, regressão sintética 4B.4 e o diagnóstico do caso `aur-05`; usa somente dados históricos selecionados, sem conexão do navegador ao Langfuse
+- `/observabilidade`: página pública de portfólio sobre spans, generations, avaliação semântica, regressão sintética 4B.4 e o diagnóstico didático da deduplicação no caso `aur-05`; apresenta limitações em investigação e usa somente dados históricos selecionados, sem conexão do navegador ao Langfuse
 
 ## Documentação
 
@@ -59,11 +61,11 @@ Documentação visual:
 - [Revisão humana 4C](docs/human-review-4c.md): evidências e opções de política para `aur-07`, `bor-05` e `bor-06`, com formulário de decisões em branco.
 - [Observabilidade Langfuse](docs/langfuse.md): trace opcional do fluxo de perguntas, busca vetorial e generations, sem enviar conteúdo de perguntas, chunks ou respostas.
 
-- [docs/architecture.md](C:/IA/auto-manual-ai/docs/architecture.md:1)
-- [docs/deploy-railway.md](C:/IA/auto-manual-ai/docs/deploy-railway.md:1)
-- [docs/railway-services.md](C:/IA/auto-manual-ai/docs/railway-services.md:1)
-- [docs/railway-deploy-checklist.md](C:/IA/auto-manual-ai/docs/railway-deploy-checklist.md:1)
-- [docs/pre-deploy-checklist.md](C:/IA/auto-manual-ai/docs/pre-deploy-checklist.md:1)
+- [docs/architecture.md](docs/architecture.md)
+- [docs/deploy-railway.md](docs/deploy-railway.md)
+- [docs/railway-services.md](docs/railway-services.md)
+- [docs/railway-deploy-checklist.md](docs/railway-deploy-checklist.md)
+- [docs/pre-deploy-checklist.md](docs/pre-deploy-checklist.md)
 
 ## Fluxo Smart Ingest
 
@@ -87,9 +89,9 @@ Documentação visual:
 ## Fluxo de pergunta
 
 - Pergunta do usuário
-- geração de queries alternativas
+- geração de queries alternativas quando aplicável
 - busca vetorial com pgvector
-- relevance grader
+- relevance grader quando necessário
 - montagem de contexto
 - geração da resposta final
 - retorno com fontes, páginas e motivos de relevância
@@ -107,8 +109,8 @@ Documentação visual:
 ## Como rodar localmente
 
 1. Configure os arquivos de ambiente com base em:
-   - [backend/.env.example](C:/IA/auto-manual-ai/backend/.env.example:1)
-   - [frontend/.env.example](C:/IA/auto-manual-ai/frontend/.env.example:1)
+   - [backend/.env.example](backend/.env.example)
+   - [frontend/.env.example](frontend/.env.example)
 
 2. Suba os serviços:
 
@@ -131,14 +133,14 @@ docker compose exec backend python app/database/bootstrap.py
 
 Os exemplos de configuração estão em:
 
-- [backend/.env.example](C:/IA/auto-manual-ai/backend/.env.example:1)
-- [frontend/.env.example](C:/IA/auto-manual-ai/frontend/.env.example:1)
+- [backend/.env.example](backend/.env.example)
+- [frontend/.env.example](frontend/.env.example)
 
 ## Deploy
 
 O guia inicial de deploy está em:
 
-- [docs/deploy-railway.md](C:/IA/auto-manual-ai/docs/deploy-railway.md:1)
+- [docs/deploy-railway.md](docs/deploy-railway.md)
 
 ## Roadmap
 

@@ -28,7 +28,7 @@ export function AppNavigation({ mobile = false }: { mobile?: boolean }) {
             key={item.href}
             href={item.href}
             className={cn(
-              "text-sm font-semibold transition",
+              "shrink-0 text-sm font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-secondary)]",
               isActive
                 ? "text-[var(--accent-secondary)]"
                 : "text-[var(--foreground)] hover:text-[var(--accent-secondary)]",

@@ -44,8 +44,8 @@ export function AppHeader({
 
   return (
     <header className="fixed inset-x-0 top-0 z-40 border-b border-[var(--border)] bg-[var(--surface)]">
-      <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-6 px-6 py-4">
-        <Link href="/" className="flex items-center gap-3">
+      <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-3 px-4 py-4 sm:gap-6 sm:px-6">
+        <Link href="/" className="flex items-center gap-3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-secondary)]">
           <span className="flex h-11 w-11 items-center justify-center overflow-hidden">
             <Image
               src="/logo-header.png"
@@ -56,7 +56,7 @@ export function AppHeader({
               unoptimized
             />
           </span>
-          <span className="text-2xl font-semibold tracking-tight text-[var(--foreground)]">
+          <span className="text-lg font-semibold tracking-tight text-[var(--foreground)] sm:text-2xl">
             FredTamashiro
           </span>
         </Link>

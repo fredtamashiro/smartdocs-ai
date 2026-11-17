@@ -38,7 +38,7 @@ export default function DocumentosPage() {
 
       <main className="min-h-screen bg-[#fafafa] pb-16 pt-32 text-[#1A1A1A] md:pt-28">
         <PageContainer className="pt-6 text-right">
-          <Link href="/observabilidade" className="text-sm font-medium text-[var(--accent-secondary)] underline-offset-4 hover:underline">
+          <Link href="/observabilidade" className="text-sm font-medium text-[var(--accent-secondary)] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-secondary)]">
             Como avaliamos as respostas
           </Link>
         </PageContainer>

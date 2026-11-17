@@ -11,6 +11,7 @@ export type PipelineStep = {
   detail: string;
   kind: PipelineKind;
   observation: string;
+  conditionalGeneration?: string;
 };
 
 export const experiment = {
@@ -40,25 +41,26 @@ export const pipelineSteps: readonly PipelineStep[] = [
     title: "Reescrita da consulta",
     detail: "Quando aplicável, o modelo amplia a busca sem responder à pergunta.",
     kind: "generation",
-    observation: "Generation · query rewrite",
+    observation: "smartdocs.rag.query_rewrite · condicional",
   },
   {
     title: "Busca vetorial",
     detail: "O pgvector retorna candidatos ordenados por distância cosseno.",
     kind: "span",
-    observation: "Span · retrieve / vector search",
+    observation: "smartdocs.rag.retrieve → smartdocs.rag.vector_search",
   },
   {
     title: "Seleção de contexto",
-    detail: "Deduplicação, limite de candidatos e relevance grader escolhem os trechos.",
-    kind: "generation",
-    observation: "Span + generation · relevance grader",
+    detail: "O span de recuperação inclui deduplicação e limite de candidatos. O grafo monta o contexto final.",
+    kind: "span",
+    observation: "smartdocs.rag.retrieve · deduplicação",
+    conditionalGeneration: "Se o grader chamar o LLM: smartdocs.rag.classify_batch ou smartdocs.rag.classify_chunk",
   },
   {
     title: "Geração da resposta",
-    detail: "O LLM responde usando o contexto selecionado.",
+    detail: "Quando há contexto, o LLM responde usando os trechos selecionados.",
     kind: "generation",
-    observation: "Generation · answer",
+    observation: "smartdocs.rag.generate_answer · com contexto",
   },
   {
     title: "Resposta com referências",
@@ -129,6 +131,8 @@ export const caseStudy = {
   cause: "O índice válido 0 era tratado como ausente por uma expressão Python com “or”.",
   correction: "O fallback agora ocorre somente quando chunk_index está ausente ou é None.",
   validation: "A página 1 passou pela deduplicação e chegou ao prompt junto da página 2.",
+  beforeCode: 'chunk_index = chunk.get("chunk_index") or fallback',
+  afterCode: 'chunk_index = chunk.get("chunk_index")\nif chunk_index is None:\n    chunk_index = fallback',
   beforeScore: "0,5",
   afterScore: "1,0",
 } as const;

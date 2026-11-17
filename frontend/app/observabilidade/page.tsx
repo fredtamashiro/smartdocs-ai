@@ -4,6 +4,7 @@ import { ArrowRight, CheckCircle2, LockKeyhole, Microscope } from "lucide-react"
 
 import { AppFooter } from "@/components/layout/app-footer";
 import { PageContainer } from "@/components/layout/page-container";
+import { CaseCodeComparison } from "@/components/observability/case-code-comparison";
 import { ObservabilityHeader } from "@/components/observability/observability-header";
 import { PipelineDiagram } from "@/components/observability/pipeline-diagram";
 import { Card } from "@/components/ui/card";
@@ -36,12 +37,12 @@ export default function ObservabilidadePage() {
                 Como o SmartDocs monitora execuções, avalia respostas e melhora continuamente seu pipeline RAG.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <a href="#fluxo" className="inline-flex items-center gap-2 rounded-lg bg-[var(--accent)] px-5 py-3 text-sm font-semibold text-[var(--accent-foreground)] transition hover:brightness-95">
+                <Link href="#fluxo" className="inline-flex items-center gap-2 rounded-lg bg-[var(--accent)] px-5 py-3 text-sm font-semibold text-[var(--accent-foreground)] transition hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-secondary)]">
                   Explorar o fluxo <ArrowRight aria-hidden="true" className="h-4 w-4" />
-                </a>
-                <a href="#experimento" className="inline-flex items-center gap-2 rounded-lg border border-[var(--border)] bg-white px-5 py-3 text-sm font-semibold transition hover:border-[var(--accent-secondary)]">
+                </Link>
+                <Link href="#experimento" className="inline-flex items-center gap-2 rounded-lg border border-[var(--border)] bg-white px-5 py-3 text-sm font-semibold transition hover:border-[var(--accent-secondary)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-secondary)]">
                   Ver experimento
-                </a>
+                </Link>
               </div>
             </div>
             <div className="rounded-[28px] border border-[var(--border)] bg-white p-7 shadow-sm">
@@ -94,7 +95,7 @@ export default function ObservabilidadePage() {
               <h2 className="heading-2 mt-3">Qualidade medida com casos controlados</h2>
               <p className="mt-4 leading-7 text-[var(--muted-foreground)]">Um dataset de documentos sintéticos permite repetir perguntas, comparar respostas e investigar falhas sem usar dados de usuários.</p>
             </div>
-            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
               {experimentStats.map((stat) => (
                 <Card key={stat.label} className="rounded-[20px] border-[var(--border)] bg-white p-5">
                   <p className="text-3xl font-bold text-[var(--accent-secondary)]">{stat.value}</p>
@@ -115,6 +116,10 @@ export default function ObservabilidadePage() {
               <p className="text-sm leading-7"><strong>LLM-as-a-Judge</strong> aplica rubricas versionadas e pode marcar um caso como não avaliável.</p>
               <p className="text-sm leading-7"><strong>Revisão humana</strong> examina ambiguidades e divergências sem substituir silenciosamente a decisão original do juiz.</p>
               <p className="text-sm leading-7"><strong>Regressão</strong> compara resultados caso a caso, preservando baselines e a metodologia usada.</p>
+            </div>
+            <div className="mt-5 rounded-[20px] border border-[var(--border)] bg-white p-5 sm:p-6">
+              <h3 className="heading-4">Melhorias em investigação</h3>
+              <p className="mt-2 text-sm leading-7 text-[var(--muted-foreground)]">Tratamento de perguntas ambíguas, calibração contínua dos avaliadores e ampliação do dataset com casos independentes. Os resultados acima são experimentais, vêm de 18 casos sintéticos e scores 1,0 não significam precisão geral de 100% do SmartDocs.</p>
             </div>
           </PageContainer>
         </section>
@@ -138,13 +143,14 @@ export default function ObservabilidadePage() {
                 <div className="flex items-center gap-3"><CheckCircle2 aria-hidden="true" className="h-6 w-6 text-[var(--accent-secondary)]" /><h3 className="heading-3">A validação</h3></div>
                 <p className="mt-6 text-sm leading-7"><strong>Correção.</strong> {caseStudy.correction}</p>
                 <p className="mt-4 text-sm leading-7"><strong>Contexto.</strong> {caseStudy.validation}</p>
-                <div className="mt-6 flex items-center gap-3 rounded-xl bg-white px-5 py-4">
+                <div className="mt-6 flex flex-wrap items-center gap-2 rounded-xl bg-white px-5 py-4 sm:gap-3">
                   <span className="text-sm text-[var(--muted-foreground)]">Answer Correctness</span>
-                  <span className="ml-auto font-semibold">{caseStudy.beforeScore} → {caseStudy.afterScore}</span>
+                  <span className="font-semibold sm:ml-auto">{caseStudy.beforeScore} → {caseStudy.afterScore}</span>
                 </div>
                 <p className="mt-4 text-xs leading-6 text-[var(--muted-foreground)]">Resultado das execuções dirigidas de validação do caso aur-05. Isoladamente, não comprova melhoria global do RAG.</p>
               </Card>
             </div>
+            <div className="mt-6"><CaseCodeComparison /></div>
           </PageContainer>
         </section>
 
@@ -154,7 +160,7 @@ export default function ObservabilidadePage() {
             <div className="max-w-3xl">
               <h2 className="heading-3">Privacidade por projeto</h2>
               <p className="mt-4 leading-7 text-[var(--muted-foreground)]">Esta página usa somente números selecionados de experimentos sintéticos. O navegador não se conecta ao Langfuse Cloud. Credenciais, prompts internos, documentos reais, respostas de usuários e identificadores privados de traces não são publicados aqui.</p>
-              <Link href="/documentos" className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[var(--accent-secondary)] hover:underline">Conhecer o Workspace <ArrowRight aria-hidden="true" className="h-4 w-4" /></Link>
+              <Link href="/documentos" className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[var(--accent-secondary)] hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-secondary)]">Conhecer o Workspace <ArrowRight aria-hidden="true" className="h-4 w-4" /></Link>
             </div>
           </PageContainer>
         </section>

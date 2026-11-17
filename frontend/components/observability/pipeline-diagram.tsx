@@ -42,6 +42,11 @@ export function PipelineDiagram() {
               <h3 className="mt-4 text-lg font-semibold text-[var(--foreground)]">{step.title}</h3>
               <p className="mt-2 text-sm leading-6 text-[var(--muted-foreground)]">{step.detail}</p>
               <p className="mt-4 break-words font-mono text-xs text-[var(--accent-secondary)]">{step.observation}</p>
+              {step.conditionalGeneration && (
+                <p className="mt-3 rounded-lg border border-[#d5d0e8] bg-[#f6f4fc] px-3 py-2 text-xs leading-5 text-[#625482]">
+                  <span className="font-semibold">Generation condicional.</span> {step.conditionalGeneration}
+                </p>
+              )}
             </div>
             {index < pipelineSteps.length - 1 && (
               <ArrowDown aria-hidden="true" className="mx-auto mt-2 h-4 w-4 text-[var(--accent-secondary)] md:hidden" />
