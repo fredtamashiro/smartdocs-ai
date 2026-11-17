@@ -6,6 +6,7 @@ O Langfuse registra a duração e o resultado de cada execução de `POST /chat/
 
 O SDK oficial Python 5.2.0 usa OpenTelemetry e é compatível com Python 3.12. A aplicação lê `backend/.env` por `pydantic-settings`; por isso as configurações são passadas ao construtor do SDK, cujo cliente é reutilizado. Não é necessário executar Langfuse em Docker.
 O exportador aceita apenas spans criados explicitamente pelo SDK Langfuse, evitando a inclusão incidental de spans de outras bibliotecas.
+O recurso OpenTelemetry recebe `service.name=smartdocs-backend` por padrão no script de inicialização da API. O nome pode ser alterado por `OTEL_SERVICE_NAME` no ambiente do processo antes da criação do cliente; ele não é derivado de `APP_NAME` nem de `pydantic-settings`.
 
 ## Fluxo observado
 
@@ -36,10 +37,12 @@ Foi escolhida instrumentação manual com context managers. O `CallbackHandler` 
 | `LANGFUSE_SECRET_KEY` | vazio | Chave secreta do projeto. |
 | `LANGFUSE_BASE_URL` | `https://cloud.langfuse.com` | URL da região do projeto. |
 | `LANGFUSE_SAMPLE_RATE` | `1.0` | Fração de traces enviada, entre `0.0` e `1.0`. |
+| `OTEL_SERVICE_NAME` | `smartdocs-backend` | Nome do serviço no recurso OpenTelemetry exibido nos traces. O script de inicialização fornece esse padrão se a variável estiver ausente. |
 
 1. Crie uma conta e um projeto em [Langfuse Cloud](https://cloud.langfuse.com/). Nas configurações do projeto, crie uma chave de API e copie as chaves pública e secreta. Use a URL da região em que criou o projeto.
 2. Copie `backend/.env.example` para `backend/.env` e preencha as chaves apenas nesse arquivo local ou em variáveis de ambiente do deploy. Defina `LANGFUSE_TRACING_ENABLED=true`. Não versione as chaves.
 3. Inicie a API normalmente e faça uma pergunta em `POST /chat/ask` com um documento válido. No projeto Langfuse, abra **Traces** e procure `smartdocs.rag.query`. A exportação é assíncrona e pode levar alguns segundos. Abra o trace para ver a hierarquia acima.
+4. No trace novo, confira `resourceAttributes.service.name` em **Metadata**. Ele deve ser `smartdocs-backend` (ou o valor definido em `OTEL_SERVICE_NAME`). Traces antigos mantêm o nome registrado na época; reinicie o processo da API depois de mudar essa variável.
 
 ### Se os traces não aparecerem
 
